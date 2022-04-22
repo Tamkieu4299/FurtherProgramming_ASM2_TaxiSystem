@@ -6,23 +6,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.ZonedDateTime;
 
-@Entity
+
 public class User {
 
-    @Id
-    @Column
+
     private Long id;
 
-    @Column
+
     private String name;
 
-    @Column
+
     private String phone;
 
-    @Column
+
     private String address;
 
-    @Column
+
     private ZonedDateTime date;
 
     public User() {};

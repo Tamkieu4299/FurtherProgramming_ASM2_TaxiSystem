@@ -1,5 +1,8 @@
 package com.asm2.taxisys.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
@@ -21,6 +24,7 @@ public class Customer{
     @Column
     private String address;
 
+    @CreationTimestamp
     @Column
     private ZonedDateTime date;
 

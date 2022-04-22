@@ -10,7 +10,7 @@ public class Admin {
         this.cars = new ArrayList<>();
         this.bookings = new ArrayList<>();
         this.invoices = new ArrayList<>();
-    };
+    }
 
     public Admin(ArrayList<Car> cars, ArrayList<Booking> bookings, ArrayList<Invoice> invoices) {
         this.cars = cars;

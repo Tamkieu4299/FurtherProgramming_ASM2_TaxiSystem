@@ -1,32 +1,29 @@
 package com.asm2.taxisys;
 
-import com.asm2.taxisys.config.AppConfig;
-import com.asm2.taxisys.entity.Customer;
-import com.asm2.taxisys.service.CustomerService;
+import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Scanner;
+import java.util.List;
 
 @SpringBootApplication
-public class TaxisysApplication {
+@Configuration
+@EnableJpaRepositories
+@EnableAutoConfiguration
+public class TaxisysApplication implements WebMvcConfigurer {
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		argumentResolvers.add(new SpecificationArgumentResolver());
+		argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
+	}
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-		CustomerService customerService = (CustomerService) context.getBean("customerService");
-		Scanner sc = new Scanner(System.in);
-
-		System.out.println("Enter name: ");
-		String name = sc.nextLine();
-
-		System.out.println("Enter phone: ");
-		String phone = sc.nextLine();
-
-		System.out.println("Enter address: ");
-		String address = sc.nextLine();
-
-		Customer customer = new Customer();
-		customer.setName("Tam");
-		customerService.saveCustomer(customer);
+		SpringApplication.run(TaxisysApplication.class, args);
 	}
 
 }
