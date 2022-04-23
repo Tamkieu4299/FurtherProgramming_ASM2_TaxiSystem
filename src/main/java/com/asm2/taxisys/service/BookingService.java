@@ -1,13 +1,22 @@
 package com.asm2.taxisys.service;
 
 import com.asm2.taxisys.entity.Booking;
+import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.repo.BookingRepo;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Transactional
@@ -59,5 +68,18 @@ public class BookingService {
 
     public Booking getById(Long id){
         return (Booking) sessionFactory.getCurrentSession().get(Booking.class, id);
+    }
+
+    public List<Booking> getAllBookingsBetween(Date start, Date end) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Booking> cr = cb.createQuery(Booking.class);
+        Root<Booking> root = cr.from(Booking.class);
+        final ZoneId zone = ZoneId.systemDefault();
+
+        Date endFinal = new Date(end.getTime() + (1000 * 60 * 60 * 24));
+        cr.select(root).where(cb.between(root.get("time"), ZonedDateTime.ofInstant(start.toInstant(), zone), ZonedDateTime.ofInstant(endFinal.toInstant(), zone)));
+
+        return session.createQuery(cr).getResultList();
     }
 }

@@ -1,12 +1,29 @@
 package com.asm2.taxisys.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+@Entity
+@Table(name="invoice")
 public class Invoice {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne()
     private Customer customer;
+
+    @ManyToOne()
     private Driver driver;
+
+    @Column
     private Double totalCharge;
+
+    @Column
+    @CreationTimestamp
     private ZonedDateTime time;
 
     public Invoice() {}

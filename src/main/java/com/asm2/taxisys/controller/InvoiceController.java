@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -55,9 +58,15 @@ public class InvoiceController {
         return invoiceService.getById(id);
     }
 
-//    @GetMapping(params = {"startLocation"})
-//    public Iterable<Booking> searchBookingByStartLocation(@Spec(path = "startLocation", params = "startLocation", spec = LikeIgnoreCase.class) Specification<Booking> startLocationSpec) {
-//        return bookingRepo.findAll(startLocationSpec);
-//    }
+    @GetMapping(params = {"time"})
+    public Iterable<Invoice> searchInvoiceByTime(@Spec(path = "time", params = "time", spec = LikeIgnoreCase.class) Specification<Invoice> timeSpec) {
+        return invoiceRepo.findAll(timeSpec);
+    }
 
+    @GetMapping(path = "/statistics")
+    public List<Invoice> getAllInvoicesBetween(@RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {
+        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+        return invoiceService.getAllInvoicesBetween(sd, ed);
+    }
 }
