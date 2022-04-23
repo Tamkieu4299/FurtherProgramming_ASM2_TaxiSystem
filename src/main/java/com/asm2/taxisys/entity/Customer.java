@@ -30,14 +30,6 @@ public class Customer{
 
     public Customer(){}
 
-//    public Customer(Long id, String name, String phone, String address, ZonedDateTime date) {
-//        this.id = id;
-//        this.name = name;
-//        this.phone = phone;
-//        this.address = address;
-//        this.date = date;
-//    }
-
     public Long getId() {
         return id;
     }

@@ -10,13 +10,6 @@ public class Invoice {
     private ZonedDateTime time;
 
     public Invoice() {}
-    public Invoice(Long id, Customer customer, Driver driver, Double totalCharge, ZonedDateTime time) {
-        this.id = id;
-        this.customer = customer;
-        this.driver = driver;
-        this.totalCharge = totalCharge;
-        this.time = time;
-    }
 
     public Long getId() {
         return id;

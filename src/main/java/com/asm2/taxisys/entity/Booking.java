@@ -1,26 +1,38 @@
 package com.asm2.taxisys.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+@Entity
+@Table(name="booking")
 public class Booking {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String startLocation;
+
+    @Column
     private String endLocation;
+
+    @Column
     private String pickTime;
+
+    @Column
     private String dropTime;
+
+    @Column
     private Long tripDistance;
+
+    @CreationTimestamp
+    @Column
     private ZonedDateTime time;
 
     public Booking() {}
-    public Booking(Long id, String startLocation, String endLocation, String pickTime, String dropTime, Long tripDistance, ZonedDateTime time) {
-        this.id = id;
-        this.startLocation = startLocation;
-        this.endLocation = endLocation;
-        this.pickTime = pickTime;
-        this.dropTime = dropTime;
-        this.tripDistance = tripDistance;
-        this.time = time;
-    }
 
     public Long getId() {
         return id;

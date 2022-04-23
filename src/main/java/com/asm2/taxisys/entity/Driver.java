@@ -1,33 +1,56 @@
 package com.asm2.taxisys.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
-public class Driver extends User {
-    private Long licenseNumber;
+@Entity
+@Table(name = "driver")
+public class Driver{
+
+    @Id
+    @Column
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
+    private String licenseNumber;
+
+    @Column
+    private String phone;
+
+    @Column
     private Double rating;
-    private Car car;
+
+    @Column
+    @CreationTimestamp
+    private ZonedDateTime date;
 
     public Driver() {};
-    public Driver(Long id, String name, String phone, String address, ZonedDateTime date, Long licenseNumber, Double rating) {
-        super(id, name, phone, address, date);
-        this.licenseNumber = licenseNumber;
-        this.rating = rating;
-        this.car = null;
+
+    public Long getId() {
+        return id;
     }
 
-    public Driver(Long id, String name, String phone, String address, ZonedDateTime date, Long licenseNumber, Double rating, Car car) {
-        super(id, name, phone, address, date);
-        this.licenseNumber = licenseNumber;
-        this.rating = rating;
-        this.car = car;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getLicenseNumber() {
+    public String getLicenseNumber() {
         return licenseNumber;
     }
 
-    public void setLicenseNumber(Long licenseNumber) {
+    public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Double getRating() {
@@ -38,12 +61,12 @@ public class Driver extends User {
         this.rating = rating;
     }
 
-    public Car getCar() {
-        return car;
+    public ZonedDateTime getDate() {
+        return date;
     }
 
-    public void setCar(Car car) {
-        this.car = car;
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
     }
 }
 

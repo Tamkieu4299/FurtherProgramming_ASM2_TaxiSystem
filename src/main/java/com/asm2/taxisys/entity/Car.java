@@ -1,46 +1,44 @@
 package com.asm2.taxisys.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+@Entity
+@Table(name = "car")
 public class Car {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String make;
+
+    @Column
     private String model;
+
+    @Column
     private String color;
+
+    @Column
     private Boolean convertible;
+
+    @Column
     private Double rating;
+
+    @Column
     private String licencePlate;
+
+    @Column
     private Double ratePerKm;
+
+    @Column
+    @CreationTimestamp
     private ZonedDateTime time;
-    private Driver driver;
 
     public Car(){};
-
-    public Car(Long id, String make, String model, String color, Boolean convertible, Double rating, String licencePlate, Double ratePerKm, ZonedDateTime time) {
-        this.id = id;
-        this.make = make;
-        this.model = model;
-        this.color = color;
-        this.convertible = convertible;
-        this.rating = rating;
-        this.licencePlate = licencePlate;
-        this.ratePerKm = ratePerKm;
-        this.time = time;
-        this.driver = null;
-    }
-
-    public Car(Long id, String make, String model, String color, Boolean convertible, Double rating, String licencePlate, Double ratePerKm, ZonedDateTime time, Driver driver) {
-        this.id = id;
-        this.make = make;
-        this.model = model;
-        this.color = color;
-        this.convertible = convertible;
-        this.rating = rating;
-        this.licencePlate = licencePlate;
-        this.ratePerKm = ratePerKm;
-        this.time = time;
-        this.driver = driver;
-    }
 
     public Long getId() {
         return id;
@@ -112,13 +110,5 @@ public class Car {
 
     public void setTime(ZonedDateTime time) {
         this.time = time;
-    }
-
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
     }
 }
