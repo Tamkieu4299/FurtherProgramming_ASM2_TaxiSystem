@@ -68,17 +68,24 @@ public class InvoiceService {
         return (Invoice) sessionFactory.getCurrentSession().get(Invoice.class, id);
     }
 
+    public List<Invoice> getAllInvoicesOnDate(Date onDate) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Invoice> cr = cb.createQuery(Invoice.class);
+        Root<Invoice> root = cr.from(Invoice.class);
+        final ZoneId zone = ZoneId.systemDefault();
+        cr.select(root).where(cb.equal(root.get("time"), ZonedDateTime.ofInstant(onDate.toInstant(), zone)));
+        return session.createQuery(cr).getResultList();
+    }
+
     public List<Invoice> getAllInvoicesBetween(Date start, Date end) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Invoice> cr = cb.createQuery(Invoice.class);
         Root<Invoice> root = cr.from(Invoice.class);
-
         final ZoneId zone = ZoneId.systemDefault();
-
         Date endFinal = new Date(end.getTime() + (1000 * 60 * 60 * 24));
         cr.select(root).where(cb.between(root.get("time"), ZonedDateTime.ofInstant(start.toInstant(), zone), ZonedDateTime.ofInstant(endFinal.toInstant(), zone)));
-
         return session.createQuery(cr).getResultList();
     }
 }

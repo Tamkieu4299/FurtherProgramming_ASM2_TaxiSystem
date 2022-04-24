@@ -3,6 +3,7 @@ package com.asm2.taxisys.controller;
 import com.asm2.taxisys.entity.Booking;
 import com.asm2.taxisys.repo.BookingRepo;
 import com.asm2.taxisys.service.BookingService;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
@@ -83,9 +84,10 @@ public class BookingController {
         return bookingRepo.findAll(tripDistanceSpec);
     }
 
-    @GetMapping(params = {"time"})
-    public Iterable<Booking> searchBookingByTime(@Spec(path = "time", params = "time", spec = LikeIgnoreCase.class) Specification<Booking> timeSpec) {
-        return bookingRepo.findAll(timeSpec);
+    @GetMapping(path = "/on-date")
+    public List<Booking> getAllBookingsOnDate(@RequestParam("onDate") String date) throws ParseException {
+        Date onDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        return bookingService.getAllBookingsOnDate(onDate);
     }
 
     @GetMapping(path = "/statistics")

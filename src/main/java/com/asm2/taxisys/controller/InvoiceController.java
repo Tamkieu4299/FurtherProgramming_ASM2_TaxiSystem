@@ -3,14 +3,15 @@ package com.asm2.taxisys.controller;
 import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.repo.InvoiceRepo;
 import com.asm2.taxisys.service.InvoiceService;
+import net.kaczmarzyk.spring.data.jpa.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
-import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -58,12 +59,13 @@ public class InvoiceController {
         return invoiceService.getById(id);
     }
 
-    @GetMapping(params = {"time"})
-    public Iterable<Invoice> searchInvoiceByTime(@Spec(path = "time", params = "time", spec = LikeIgnoreCase.class) Specification<Invoice> timeSpec) {
-        return invoiceRepo.findAll(timeSpec);
+    @GetMapping(path = "/on-date")
+    public List<Invoice> getAllInvoicesOnDate(@RequestParam("onDate") String date) throws ParseException {
+        Date onDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        return invoiceService.getAllInvoicesOnDate(onDate);
     }
 
-    @GetMapping(path = "/statistics")
+    @GetMapping(path = "/in-period")
     public List<Invoice> getAllInvoicesBetween(@RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {
         Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
         Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
