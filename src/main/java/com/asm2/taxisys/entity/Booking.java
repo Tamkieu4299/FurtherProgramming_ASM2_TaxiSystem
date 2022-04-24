@@ -28,6 +28,10 @@ public class Booking {
     @Column
     private Long tripDistance;
 
+    @Column
+    @OneToOne
+    private Invoice invoice;
+
     @CreationTimestamp
     @Column
     private ZonedDateTime time;
@@ -88,5 +92,13 @@ public class Booking {
 
     public void setTime(ZonedDateTime time) {
         this.time = time;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

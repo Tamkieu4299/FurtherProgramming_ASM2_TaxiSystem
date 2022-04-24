@@ -24,6 +24,10 @@ public class Driver{
     private Double rating;
 
     @Column
+    @OneToOne
+    private Car car;
+
+    @Column
     @CreationTimestamp
     private ZonedDateTime date;
 
@@ -65,8 +69,18 @@ public class Driver{
         return date;
     }
 
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
     public void setDate(ZonedDateTime date) {
         this.date = date;
     }
+
+
 }
 

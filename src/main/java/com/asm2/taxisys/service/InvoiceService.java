@@ -1,6 +1,6 @@
 package com.asm2.taxisys.service;
 
-import com.asm2.taxisys.entity.Invoice;
+import com.asm2.taxisys.entity.*;
 import com.asm2.taxisys.repo.InvoiceRepo;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -8,12 +8,11 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,6 +85,36 @@ public class InvoiceService {
         final ZoneId zone = ZoneId.systemDefault();
         Date endFinal = new Date(end.getTime() + (1000 * 60 * 60 * 24));
         cr.select(root).where(cb.between(root.get("time"), ZonedDateTime.ofInstant(start.toInstant(), zone), ZonedDateTime.ofInstant(endFinal.toInstant(), zone)));
+        return session.createQuery(cr).getResultList();
+    }
+
+    public List<Invoice> getAllInvoicesByCustomerBetween(Long customerId, Date start, Date end) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Invoice> cr = cb.createQuery(Invoice.class);
+        Root<Invoice> root = cr.from(Invoice.class);
+        Join<Invoice, Customer> customerInvoice = root.join(Invoice_.customer);
+        final ZoneId zone = ZoneId.systemDefault();
+        Date endFinal = new Date(end.getTime() + (1000 * 60 * 60 * 24));
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(customerInvoice.get(Customer_.id), customerId));
+        predicates.add(cb.between(root.get("time"), ZonedDateTime.ofInstant(start.toInstant(), zone), ZonedDateTime.ofInstant(endFinal.toInstant(), zone)));
+        cr.select(root).where(predicates.toArray(new Predicate[]{}));
+        return session.createQuery(cr).getResultList();
+    }
+
+    public List<Invoice> getAllInvoicesByDriverBetween(Long driverId, Date start, Date end) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Invoice> cr = cb.createQuery(Invoice.class);
+        Root<Invoice> root = cr.from(Invoice.class);
+        Join<Invoice, Driver> driverInvoice = root.join(Invoice_.driver);
+        final ZoneId zone = ZoneId.systemDefault();
+        Date endFinal = new Date(end.getTime() + (1000 * 60 * 60 * 24));
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(driverInvoice.get(Driver_.id), driverId));
+        predicates.add(cb.between(root.get("time"), ZonedDateTime.ofInstant(start.toInstant(), zone), ZonedDateTime.ofInstant(endFinal.toInstant(), zone)));
+        cr.select(root).where(predicates.toArray(new Predicate[]{}));
         return session.createQuery(cr).getResultList();
     }
 }

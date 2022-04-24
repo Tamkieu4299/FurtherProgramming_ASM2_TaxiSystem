@@ -71,4 +71,18 @@ public class InvoiceController {
         Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
         return invoiceService.getAllInvoicesBetween(sd, ed);
     }
+
+    @GetMapping(path = "/query/by-customer/{id}")
+    public List<Invoice> getAllSaleInvoicesByCustomerBetween(@PathVariable Long id, @RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {
+        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+        return invoiceService.getAllInvoicesByCustomerBetween(id, sd, ed);
+    }
+
+    @GetMapping(path = "/query/by-driver/{id}")
+    public List<Invoice> getAllSaleInvoicesByDriverBetween(@PathVariable Long id, @RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {
+        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+        return invoiceService.getAllInvoicesByDriverBetween(id, sd, ed);
+    }
 }
