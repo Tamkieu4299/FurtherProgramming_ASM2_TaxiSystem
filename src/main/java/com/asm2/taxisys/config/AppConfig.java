@@ -56,7 +56,7 @@ public class AppConfig {
 
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
-
+    
         sessionFactoryBean.setHibernateProperties(properties);
         sessionFactoryBean.setPackagesToScan("com.asm2.taxisys.entity");
 

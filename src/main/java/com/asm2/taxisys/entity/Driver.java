@@ -4,6 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "driver")
@@ -23,9 +24,12 @@ public class Driver{
     @Column
     private Double rating;
 
-    @Column
+    @JoinColumn(name = "id")
     @OneToOne
     private Car car;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "driver")
+    private List<Invoice> invoices;
 
     @Column
     @CreationTimestamp

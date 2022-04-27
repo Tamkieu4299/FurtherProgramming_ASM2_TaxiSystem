@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -23,6 +24,9 @@ public class Customer{
 
     @Column
     private String address;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    private List<Invoice> invoices;
 
     @CreationTimestamp
     @Column

@@ -28,7 +28,7 @@ public class Booking {
     @Column
     private Long tripDistance;
 
-    @Column
+    @JoinColumn(name = "id")
     @OneToOne
     private Invoice invoice;
 

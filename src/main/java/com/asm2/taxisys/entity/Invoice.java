@@ -14,10 +14,15 @@ public class Invoice {
     private Long id;
 
     @ManyToOne()
+    @JoinColumn(name = "customer")
     private Customer customer;
 
     @ManyToOne()
+    @JoinColumn(name = "driver")
     private Driver driver;
+
+    @OneToOne(mappedBy = "invoice")
+    private Booking booking;
 
     @Column
     private Double totalCharge;
