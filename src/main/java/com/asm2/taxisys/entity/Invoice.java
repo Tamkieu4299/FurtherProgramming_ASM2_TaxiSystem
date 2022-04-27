@@ -33,6 +33,11 @@ public class Invoice {
 
     public Invoice() {}
 
+    public Invoice(Customer customer, Driver driver){
+        this.customer=customer;
+        this.driver=driver;
+    }
+
     public Long getId() {
         return id;
     }

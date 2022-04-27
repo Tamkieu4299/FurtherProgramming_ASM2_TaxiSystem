@@ -1,6 +1,8 @@
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Driver;
+import com.asm2.taxisys.repo.CarRepo;
+import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.DriverService;
 import com.asm2.taxisys.repo.DriverRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,12 @@ public class DriverController {
 
     @Autowired
     private DriverRepo driverRepo;
+
+    @Autowired
+    private CarRepo carRepo;
+
+    @Autowired
+    private CarService carService;
 
     public DriverController(DriverRepo driverRepo) {
         this.driverRepo = driverRepo;
@@ -68,5 +76,16 @@ public class DriverController {
     @GetMapping(params = {"phone"})
     public Iterable<Driver> searchDriverByPhone(@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Driver> phoneSpec) {
         return driverRepo.findAll(phoneSpec);
+    }
+
+    @PostMapping(path = "/select-car/{id}")
+    public void selectCar(@RequestParam("carId") Long carId, @PathVariable Long id){
+        if(carService.getById(carId)==null){
+            carService.getById(carId).setDriver(driverService.getById(id));
+            this.driverService.getById(id).setCar(carService.getById(carId));
+            System.out.println("Selected car for driver !");
+            return;
+        }
+        System.out.println("This car has been choosen !");
     }
 }

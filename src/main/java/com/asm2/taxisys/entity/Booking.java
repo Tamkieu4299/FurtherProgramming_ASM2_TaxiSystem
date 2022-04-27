@@ -38,6 +38,12 @@ public class Booking {
 
     public Booking() {}
 
+    public Booking(String pickTime, String dropTime, Invoice invoice){
+        this.pickTime = pickTime;
+        this.dropTime = dropTime;
+        this.invoice = invoice;
+    }
+
     public Long getId() {
         return id;
     }

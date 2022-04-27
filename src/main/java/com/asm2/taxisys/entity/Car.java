@@ -31,6 +31,9 @@ public class Car {
     @Column
     private String licencePlate;
 
+    @OneToOne(mappedBy = "car")
+    private Driver driver;
+
     @Column
     private Double ratePerKm;
 
@@ -110,5 +113,13 @@ public class Car {
 
     public void setTime(ZonedDateTime time) {
         this.time = time;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 }
