@@ -31,7 +31,7 @@ public class Car {
     @Column
     private String licencePlate;
 
-    @OneToOne(mappedBy = "car")
+    @OneToOne
     private Driver driver;
 
     @Column

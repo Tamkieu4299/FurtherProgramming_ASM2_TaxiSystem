@@ -11,6 +11,13 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 import java.util.List;
 
+//    "make": "Audi",
+//            "model": "2022",
+//            "color": "black",
+//            "convertible": true,
+//            "rating": 5.00,
+//            "licensePlate": "70H-123",
+//            "ratePerKm": 4.787
 @RestController
 @RequestMapping("/cars")
 public class CarController {
@@ -40,8 +47,9 @@ public class CarController {
         }
     }
 
-    @RequestMapping(path = "/updateCar", method = RequestMethod.PUT)
-    public long updateCar(@RequestBody Car car){
+    @RequestMapping(path = "/updateCar/{id}", method = RequestMethod.PUT)
+    public long updateCar(@PathVariable Long id){
+        Car car = carService.getById(id);
         return carService.updateCar(car);
     }
 

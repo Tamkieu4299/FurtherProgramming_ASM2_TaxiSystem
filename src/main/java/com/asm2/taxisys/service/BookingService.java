@@ -98,8 +98,9 @@ public class BookingService {
         List<Driver> busyDrivers = new ArrayList<>();
         List<Driver> freeDrivers = new ArrayList<>();
         SimpleDateFormat format =new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+
         for(Booking booking: bookings)
-            if(format.parse(booking.getPickTime()).compareTo(time)>=0 || format.parse(booking.getDropTime()).compareTo(time)<0)
+            if(format.parse(booking.getDropTime()).compareTo(time)>0)
                 busyDrivers.add(booking.getInvoice().getDriver());
         for(Driver driver: allDrivers)
             if(!busyDrivers.contains(driver)) freeDrivers.add(driver);

@@ -32,19 +32,18 @@ public class CustomerBookingController {
     @Autowired
     private BookingService bookingService;
 
-    @Autowired
-    private InvoiceService invoiceService;
-
     @GetMapping(path = "/view-cars")
     public List<Car> getFreeCars(@RequestParam("pickTime") String pickTime ) throws Exception{
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
         Date time = format.parse(pickTime);
+
         List<Driver> allDrivers = driverService.getAllDrivers();
         List<Driver> freeDrivers= this.bookingService.getFreeDrivers(time, allDrivers);
         List<Car> freeCars = new ArrayList<>();
 
         for(Driver driver: freeDrivers)
-            freeCars.add(driver.getCar());
+            if(driver.getCar()!=null)
+                freeCars.add(driver.getCar());
 
         return freeCars;
     }
@@ -63,12 +62,7 @@ public class CustomerBookingController {
         invoice.setDriver(driver);
 
         invoiceController.addInvoice(invoice);
+
         return invoice.getId();
-
-
-
     }
-
-
-
 }

@@ -13,6 +13,9 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 import java.util.List;
 
+//"licenseNumber": "abc123",
+//        "phone": "0834086256",
+//        "rating": 5.00
 @RestController
 @RequestMapping("/drivers")
 public class DriverController {
@@ -48,8 +51,9 @@ public class DriverController {
         }
     }
 
-    @RequestMapping(path = "/updateDriver", method = RequestMethod.PUT)
-    public long updateDriver(@RequestBody Driver driver){
+    @RequestMapping(path = "/updateDriver/{id}", method = RequestMethod.POST)
+    public long updateDriver(@PathVariable Long id){
+        Driver driver = driverService.getById(id);
         return driverService.updateDriver(driver);
     }
 
@@ -80,10 +84,16 @@ public class DriverController {
 
     @PostMapping(path = "/select-car/{id}")
     public void selectCar(@RequestParam("carId") Long carId, @PathVariable Long id){
-        if(carService.getById(carId)==null){
+        if(carService.getById(carId).getDriver()==null){
             carService.getById(carId).setDriver(driverService.getById(id));
-            this.driverService.getById(id).setCar(carService.getById(carId));
+            carService.updateCar(carService.getById(carId));
+            driverService.getById(id).setCar(carService.getById(carId));
+            driverService.updateDriver(driverService.getById(id));
             System.out.println("Selected car for driver !");
+            return;
+        }
+        else if(driverService.getById(id).getCar()!=null) {
+            System.out.println("This driver already had car !");
             return;
         }
         System.out.println("This car has been choosen !");

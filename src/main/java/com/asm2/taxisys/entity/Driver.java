@@ -24,7 +24,7 @@ public class Driver{
     @Column
     private Double rating;
 
-    @JoinColumn(name = "id")
+//    @JoinColumn(name = "id")
     @OneToOne
     private Car car;
 
