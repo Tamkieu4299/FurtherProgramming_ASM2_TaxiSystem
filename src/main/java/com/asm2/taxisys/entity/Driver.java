@@ -24,11 +24,11 @@ public class Driver{
     @Column
     private Double rating;
 
-//    @JoinColumn(name = "id")
-    @OneToOne
-    private Car car;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "driver")
+
+    private Long carId;
+
+
     private List<Invoice> invoices;
 
     @Column
@@ -69,17 +69,19 @@ public class Driver{
         this.rating = rating;
     }
 
+    public Long getCarId() {
+        return carId;
+    }
+
+    public void setCarId(Long carId) {
+        this.carId = carId;
+    }
+
     public ZonedDateTime getDate() {
         return date;
     }
 
-    public Car getCar() {
-        return car;
-    }
 
-    public void setCar(Car car) {
-        this.car = car;
-    }
 
     public void setDate(ZonedDateTime date) {
         this.date = date;

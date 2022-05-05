@@ -43,13 +43,20 @@ public class CarService {
 
     public long updateCar(Car car){
         List<Car> carsList = this.getAllCars();
-        if(!carsList.contains(car)){
-            System.out.println("Invalid car !");
-            return -1;
+
+
+        for (int i = 0; i < carsList.size(); i += 1) {
+            if (carsList.get(i).getId().equals(car.getId())) {
+                carsList.set(i,car);
+                sessionFactory.getCurrentSession().merge(carsList.get(i));
+                System.out.println("Updated car with the ID: " + car.getId());
+                return car.getId();
+            }
+
+
         }
-        sessionFactory.getCurrentSession().update(car);
-        System.out.println("Updated car with the ID: " + car.getId());
-        return car.getId();
+        return -1;
+
     }
 
     public List<Car> getAllCars(){

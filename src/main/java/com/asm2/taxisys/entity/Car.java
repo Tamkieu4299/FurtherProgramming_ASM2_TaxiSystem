@@ -31,8 +31,8 @@ public class Car {
     @Column
     private String licencePlate;
 
-    @OneToOne
-    private Driver driver;
+//    @OneToOne
+    private Long driverId;
 
     @Column
     private Double ratePerKm;
@@ -115,11 +115,11 @@ public class Car {
         this.time = time;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public Long getDriverId() {
+        return driverId;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public void setDriverId(Long driverId) {
+        this.driverId = driverId;
     }
 }

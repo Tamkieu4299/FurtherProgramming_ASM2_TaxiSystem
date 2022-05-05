@@ -1,6 +1,7 @@
 package com.asm2.taxisys.service;
 
 import com.asm2.taxisys.entity.Driver;
+
 import com.asm2.taxisys.repo.DriverRepo;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -41,16 +42,19 @@ public class DriverService {
         sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Driver.class, id));
     }
 
-    public long updateDriver(Driver driver){
+    public long updateDriver(Driver driver) {
         List<Driver> driversList = this.getAllDrivers();
-        if(!driversList.contains(driver)){
-            System.out.println("Invalid driver !");
-            return -1;
+        for (int i = 0; i < driversList.size(); i += 1) {
+            if (driversList.get(i).getId().equals(driver.getId())) {
+                driversList.set(i,driver);
+                sessionFactory.getCurrentSession().merge(driversList.get(i));
+                System.out.println("Updated driver with the ID: " + driver.getId());
+                return driver.getId();
+            }
         }
-        sessionFactory.getCurrentSession().update(driver);
-        System.out.println("Updated driver with the ID: " + driver.getId());
-        return driver.getId();
+        return -1;
     }
+
 
     public List<Driver> getAllDrivers(){
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Driver.class);

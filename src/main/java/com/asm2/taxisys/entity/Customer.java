@@ -25,7 +25,6 @@ public class Customer{
     @Column
     private String address;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     private List<Invoice> invoices;
 
     @CreationTimestamp

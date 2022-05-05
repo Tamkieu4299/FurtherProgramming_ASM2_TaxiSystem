@@ -2,6 +2,7 @@ package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.service.CarService;
+import com.asm2.taxisys.service.DriverService;
 import com.asm2.taxisys.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,67 +21,69 @@ public class DashBoardController {
 
     @Autowired
     private CarService carService;
+    @Autowired
+    private DriverService driverService;
 
-    @GetMapping(path = "/total-revenue-period")
-    public Map<String, Object> getRevenue(@RequestParam("start") String start,
-                                          @RequestParam("end") String end) throws ParseException {
-        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
-        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+//    @GetMapping(path = "/total-revenue-period")
+//    public Map<String, Object> getRevenue(@RequestParam("start") String start,
+//                                          @RequestParam("end") String end) throws ParseException {
+//        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+//        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+//
+//        double revenue = 0;
+//        List<Invoice> invoices = invoiceService.getAllInvoicesBetween(sd, ed);
+//        for (Invoice invoice : invoices) {
+//            revenue += invoice.getTotalCharge();
+//        }
+//        Map<String, Object> result = new HashMap<>(3);
+//        result.put("Begin date", start);
+//        result.put("End date", end);
+//        result.put("Revenue", revenue);
+//
+//        return result;
+//    }
+//
+//    @GetMapping(path = "/customer-revenue-period/{id}")
+//    public Map<String, Object> getRevenueByCustomer(@RequestParam("start") String start,
+//                                                           @RequestParam("end") String end,
+//                                                           @PathVariable Long id) throws ParseException {
+//        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+//        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+//
+//        double revenue = 0;
+//        List<Invoice> invoices = invoiceService.getAllInvoicesByCustomerBetween(id, sd, ed);
+//        for (Invoice invoice : invoices) {
+//            revenue += invoice.getTotalCharge();
+//        }
+//        Map<String, Object> result = new HashMap<>(4);
+//        result.put("Customer's ID", id);
+//        result.put("Begin date", start);
+//        result.put("End date", end);
+//        result.put("Revenue", revenue);
+//
+//        return result;
+//    }
 
-        double revenue = 0;
-        List<Invoice> invoices = invoiceService.getAllInvoicesBetween(sd, ed);
-        for (Invoice invoice : invoices) {
-            revenue += invoice.getTotalCharge();
-        }
-        Map<String, Object> result = new HashMap<>(3);
-        result.put("Begin date", start);
-        result.put("End date", end);
-        result.put("Revenue", revenue);
-
-        return result;
-    }
-
-    @GetMapping(path = "/customer-revenue-period/{id}")
-    public Map<String, Object> getRevenueByCustomer(@RequestParam("start") String start,
-                                                           @RequestParam("end") String end,
-                                                           @PathVariable Long id) throws ParseException {
-        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
-        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
-
-        double revenue = 0;
-        List<Invoice> invoices = invoiceService.getAllInvoicesByCustomerBetween(id, sd, ed);
-        for (Invoice invoice : invoices) {
-            revenue += invoice.getTotalCharge();
-        }
-        Map<String, Object> result = new HashMap<>(4);
-        result.put("Customer's ID", id);
-        result.put("Begin date", start);
-        result.put("End date", end);
-        result.put("Revenue", revenue);
-
-        return result;
-    }
-
-    @GetMapping(path = "/driver-revenue-period/{id}")
-    public Map<String, Object> getRevenueByDriver(@RequestParam("start") String start,
-                                                    @RequestParam("end") String end,
-                                                    @PathVariable Long id) throws ParseException {
-        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
-        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
-
-        double revenue = 0;
-        List<Invoice> invoices = invoiceService.getAllInvoicesByDriverBetween(id, sd, ed);
-        for (Invoice invoice : invoices) {
-            revenue += invoice.getTotalCharge();
-        }
-        Map<String, Object> result = new HashMap<>(4);
-        result.put("Driver's ID", id);
-        result.put("Begin date", start);
-        result.put("End date", end);
-        result.put("Revenue", revenue);
-
-        return result;
-    }
+//    @GetMapping(path = "/driver-revenue-period/{id}")
+//    public Map<String, Object> getRevenueByDriver(@RequestParam("start") String start,
+//                                                    @RequestParam("end") String end,
+//                                                    @PathVariable Long id) throws ParseException {
+//        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
+//        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+//
+//        double revenue = 0;
+//        List<Invoice> invoices = invoiceService.getAllInvoicesByDriverBetween(id, sd, ed);
+//        for (Invoice invoice : invoices) {
+//            revenue += invoice.getTotalCharge();
+//        }
+//        Map<String, Object> result = new HashMap<>(4);
+//        result.put("Driver's ID", id);
+//        result.put("Begin date", start);
+//        result.put("End date", end);
+//        result.put("Revenue", revenue);
+//
+//        return result;
+//    }
 
     @GetMapping(path = "/car-use-month")
     public Map<String, Integer> usesOfCarInMonth(@RequestParam("month") String month,
@@ -94,7 +97,7 @@ public class DashBoardController {
         Map<String, Set<ZonedDateTime>> checkRepeatDate = new HashMap<>();
         Map<String, Integer> result = new HashMap<>();
         for(Invoice invoice: invoices){
-            String carLicensePlate = invoice.getDriver().getCar().getLicencePlate();
+            String carLicensePlate =carService.getById(driverService.getById(invoice.getDriver()).getCarId()).getLicencePlate();
             if(!result.containsKey(carLicensePlate)) {
                 result.put(carLicensePlate, 0);
                 Set<ZonedDateTime> days = new HashSet<>();

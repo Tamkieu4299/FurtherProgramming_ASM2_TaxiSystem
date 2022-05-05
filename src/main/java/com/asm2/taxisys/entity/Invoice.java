@@ -13,16 +13,14 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne()
-    @JoinColumn(name = "customer")
-    private Customer customer;
 
-    @ManyToOne()
-    @JoinColumn(name = "driver")
-    private Driver driver;
+    private Long customerId;
 
-    @OneToOne(mappedBy = "invoice")
-    private Booking booking;
+
+    private Long driverId;
+
+
+    private Long bookingId;
 
     @Column
     private Double totalCharge;
@@ -33,9 +31,9 @@ public class Invoice {
 
     public Invoice() {}
 
-    public Invoice(Customer customer, Driver driver){
-        this.customer=customer;
-        this.driver=driver;
+    public Invoice(Long customerId, Long driverId){
+        this.customerId=customerId;
+        this.driverId=driverId;
     }
 
     public Long getId() {
@@ -46,20 +44,20 @@ public class Invoice {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Long getCustomer() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(Long customerId) {
+        this.customerId = customerId;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public Long getDriver() {
+        return driverId;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public void setDriver(Long driverId) {
+        this.driverId = driverId;
     }
 
     public Double getTotalCharge() {

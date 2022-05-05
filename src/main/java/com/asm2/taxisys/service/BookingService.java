@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.asm2.taxisys.service.InvoiceService;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -25,6 +25,11 @@ import java.util.List;
 public class BookingService {
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private InvoiceService invoiceService;
+    @Autowired
+    private DriverService driverService;
 
     @Autowired
     private BookingRepo bookingRepo;
@@ -53,13 +58,15 @@ public class BookingService {
 
     public long updateBooking(Booking booking){
         List<Booking> bookingsList = this.getAllBookings();
-        if(!bookingsList.contains(booking)){
-            System.out.println("Invalid booking !");
-            return -1;
+        for (int i = 0; i < bookingsList.size(); i += 1) {
+            if (bookingsList.get(i).getId().equals(booking.getId())) {
+                bookingsList.set(i,booking);
+                sessionFactory.getCurrentSession().merge(bookingsList.get(i));
+                System.out.println("Updated booking with the ID: " + booking.getId());
+                return booking.getId();
+            }
         }
-        sessionFactory.getCurrentSession().update(booking);
-        System.out.println("Updated booking with the ID: " + booking.getId());
-        return booking.getId();
+        return -1;
     }
 
     public List<Booking> getAllBookings(){
@@ -101,7 +108,7 @@ public class BookingService {
 
         for(Booking booking: bookings)
             if(format.parse(booking.getDropTime()).compareTo(time)>0)
-                busyDrivers.add(booking.getInvoice().getDriver());
+                busyDrivers.add(driverService.getById(invoiceService.getById(booking.getInvoice()).getDriver()));
         for(Driver driver: allDrivers)
             if(!busyDrivers.contains(driver)) freeDrivers.add(driver);
 

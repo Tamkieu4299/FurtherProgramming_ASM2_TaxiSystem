@@ -1,6 +1,7 @@
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Driver;
+import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.DriverService;
@@ -84,15 +85,19 @@ public class DriverController {
 
     @PostMapping(path = "/select-car/{id}")
     public void selectCar(@RequestParam("carId") Long carId, @PathVariable Long id){
-        if(carService.getById(carId).getDriver()==null){
-            carService.getById(carId).setDriver(driverService.getById(id));
-            carService.updateCar(carService.getById(carId));
-            driverService.getById(id).setCar(carService.getById(carId));
-            driverService.updateDriver(driverService.getById(id));
+        if(carService.getById(carId).getDriverId()==null && driverService.getById(id).getCarId()==null){
+            Car car=carService.getById(carId);
+            Driver driver=driverService.getById(id);
+            driver.setCarId(carId);
+            car.setDriverId(id);
+
+            driverService.updateDriver(driver);
+            carService.updateCar(car);
+
             System.out.println("Selected car for driver !");
             return;
         }
-        else if(driverService.getById(id).getCar()!=null) {
+        else if(driverService.getById(id).getCarId()!=null) {
             System.out.println("This driver already had car !");
             return;
         }
