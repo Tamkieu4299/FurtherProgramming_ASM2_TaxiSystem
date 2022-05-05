@@ -28,8 +28,8 @@ public class Driver{
 
     private Long carId;
 
-
-    private List<Invoice> invoices;
+    @ElementCollection(targetClass=Long.class)
+    private List<Long> invoices;
 
     @Column
     @CreationTimestamp
