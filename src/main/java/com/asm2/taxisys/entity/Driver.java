@@ -1,14 +1,17 @@
 package com.asm2.taxisys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.List;
-
+import java.io.Serializable;
 @Entity
 @Table(name = "driver")
-public class Driver{
+public class Driver implements Serializable {
 
     @Id
     @Column
@@ -24,11 +27,13 @@ public class Driver{
     @Column
     private Double rating;
 
-//    @JoinColumn(name = "id")
-    @OneToOne
+
+    @OneToOne(mappedBy="driver",cascade = CascadeType.ALL,fetch =FetchType.EAGER)
+    @JoinColumn(name="carId")
+    @JsonManagedReference
     private Car car;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "driver")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "driver")
     private List<Invoice> invoices;
 
     @Column
@@ -36,6 +41,9 @@ public class Driver{
     private ZonedDateTime date;
 
     public Driver() {};
+//    public Driver copy(){
+//        return new Driver(this.id,this.licenseNumber,this.phone,this.rating,this.car,this.invoices,this.date);
+//    }
 
     public Long getId() {
         return id;

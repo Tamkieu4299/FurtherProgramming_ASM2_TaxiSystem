@@ -49,13 +49,16 @@ public class InvoiceService {
 
     public long updateInvoice(Invoice invoice){
         List<Invoice> invoicesList = this.getAllInvoices();
-        if(!invoicesList.contains(invoice)){
-            System.out.println("Invalid invoice !");
-            return -1;
+        for (Invoice i : invoicesList){
+            if (i.getId()==invoice.getId()){
+                invoiceRepo.save(invoice);
+                System.out.println("Updated invoice with the ID: " + invoice.getId());
+                return invoice.getId();
+            }
         }
-        sessionFactory.getCurrentSession().update(invoice);
-        System.out.println("Updated invoice with the ID: " + invoice.getId());
-        return invoice.getId();
+        System.out.println("can not update Invoice ");
+        return -1;
+
     }
 
     public List<Invoice> getAllInvoices(){

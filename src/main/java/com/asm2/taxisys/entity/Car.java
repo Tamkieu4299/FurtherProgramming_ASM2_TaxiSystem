@@ -1,17 +1,29 @@
 package com.asm2.taxisys.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+import java.io.Serializable;
+import java.time.temporal.ChronoUnit;
+
 @Entity
 @Table(name = "car")
-public class Car {
+public class Car{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="carId")
     private Long id;
+
+    @CreatedDate
+    @JsonIgnore
+    private ZonedDateTime createdDate = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
     @Column
     private String make;
@@ -31,7 +43,9 @@ public class Car {
     @Column
     private String licencePlate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="driverId")
+    @JsonBackReference
     private Driver driver;
 
     @Column
@@ -43,6 +57,11 @@ public class Car {
 
     public Car(){};
 
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
     public Long getId() {
         return id;
     }

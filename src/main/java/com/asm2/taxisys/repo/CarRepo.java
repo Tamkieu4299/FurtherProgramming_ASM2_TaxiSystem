@@ -6,4 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface CarRepo extends PagingAndSortingRepository<Car, Long>, JpaSpecificationExecutor<Car> {
 
+    Car findCarById(Long id);
 }

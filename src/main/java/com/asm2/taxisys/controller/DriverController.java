@@ -1,10 +1,13 @@
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Driver;
+import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.DriverService;
 import com.asm2.taxisys.repo.DriverRepo;
+import org.hibernate.SessionFactory;
+import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/drivers")
 public class DriverController {
-
+    @Autowired
+    private SessionFactory sessionFactory;
     @Autowired
     private DriverService driverService;
 
@@ -82,18 +86,21 @@ public class DriverController {
         return driverRepo.findAll(phoneSpec);
     }
 
+
+//    @PostMapping(path = "/test/{id}")
+//    public Long selectCar(@PathVariable("id") Long id, @RequestParam("carId") Long carId){
+//        return driverService.selectCar(id , carId);
+//    }
+
     @PostMapping(path = "/select-car/{id}")
-    public void selectCar(@RequestParam("carId") Long carId, @PathVariable Long id){
-        if(carService.getById(carId).getDriver()==null){
-            carService.getById(carId).setDriver(driverService.getById(id));
-            carService.updateCar(carService.getById(carId));
-            driverService.getById(id).setCar(carService.getById(carId));
-            driverService.updateDriver(driverService.getById(id));
-            System.out.println("Selected car for driver !");
-            return;
-        }
-        else if(driverService.getById(id).getCar()!=null) {
-            System.out.println("This driver already had car !");
+    public void selectCar(@RequestParam("carId") Long carId, @PathVariable("id") Long id){
+        if(carService.getById(carId).getDriver()==null) {
+            Car car = carService.getById(carId);
+            Driver driver = driverService.getById(id);
+            driver.setCar(car);
+            car.setDriver(driver);
+            carService.updateCar(car);
+            driverService.updateDriver(driver);
             return;
         }
         System.out.println("This car has been choosen !");

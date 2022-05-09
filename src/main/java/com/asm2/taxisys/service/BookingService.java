@@ -42,7 +42,7 @@ public class BookingService {
                 return -1;
             }
         }
-        sessionFactory.getCurrentSession().save(booking);
+        bookingRepo.save(booking);
         System.out.println("Created booking with the ID: " + booking.getId());
         return booking.getId();
     }
@@ -53,13 +53,15 @@ public class BookingService {
 
     public long updateBooking(Booking booking){
         List<Booking> bookingsList = this.getAllBookings();
-        if(!bookingsList.contains(booking)){
-            System.out.println("Invalid booking !");
-            return -1;
+
+        for (Booking b:bookingsList){
+            if (b.getId()==booking.getId()){
+                bookingRepo.save(booking);
+                System.out.println("Updated invoice with the ID: " + booking.getId());
+                return booking.getId();
+            }
         }
-        sessionFactory.getCurrentSession().update(booking);
-        System.out.println("Updated booking with the ID: " + booking.getId());
-        return booking.getId();
+        return -1;
     }
 
     public List<Booking> getAllBookings(){
