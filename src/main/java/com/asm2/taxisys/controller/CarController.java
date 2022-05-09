@@ -1,6 +1,7 @@
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Car;
+import com.asm2.taxisys.entity.Customer;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,9 @@ public class CarController {
     }
 
     @RequestMapping(path = "/updateCar/{id}", method = RequestMethod.PUT)
-    public long updateCar(@PathVariable Long id){
-        Car car = carService.getById(id);
+    public long updateCar(@PathVariable Long id, @RequestBody Car car){
+//        Car car = carService.getById(id);
+        System.out.println(car.getMake());
         return carService.updateCar(car);
     }
 

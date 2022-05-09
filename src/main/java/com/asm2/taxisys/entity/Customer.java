@@ -25,8 +25,9 @@ public class Customer{
     @Column
     private String address;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-    private List<Invoice> invoices;
+    @Column
+    @ElementCollection(targetClass=Long.class)
+    private List<Long> invoices;
 
     @CreationTimestamp
     @Column
@@ -73,4 +74,6 @@ public class Customer{
     public void setDate(ZonedDateTime date) {
         this.date = date;
     }
+
+
 }

@@ -42,8 +42,8 @@ public class CustomerBookingController {
         List<Car> freeCars = new ArrayList<>();
 
         for(Driver driver: freeDrivers)
-            if(driver.getCar()!=null)
-                freeCars.add(driver.getCar());
+            if(driver.getCarId()!=null)
+                freeCars.add(carService.getById(driver.getCarId()));
 
         return freeCars;
     }
@@ -54,12 +54,12 @@ public class CustomerBookingController {
             System.out.println("This car is busy at that time! Please check again");
             return  0L;
         }
-        Customer customer = customerService.getById(customerId);
-        Driver driver  = carService.getById(carId).getDriver();
+//        Customer customer = customerService.getById(customerId);
+        Long driverId  = carService.getById(carId).getDriverId();
 
         Invoice invoice = new Invoice();
-        invoice.setCustomer(customer);
-        invoice.setDriver(driver);
+        invoice.setCustomer(customerId);
+        invoice.setDriver(driverId);
 
         invoiceController.addInvoice(invoice);
 

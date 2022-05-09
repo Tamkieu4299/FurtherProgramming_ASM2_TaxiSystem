@@ -45,13 +45,15 @@ public class CustomerService {
 
     public long updateCustomer(Customer customer){
         List<Customer> customersList = this.getAllCustomers();
-        if(!customersList.contains(customer)){
-            System.out.println("Invalid customer !");
-            return -1;
+        for (int i = 0; i < customersList.size(); i += 1) {
+            if (customersList.get(i).getId().equals(customer.getId())) {
+                customersList.set(i,customer);
+                sessionFactory.getCurrentSession().merge(customersList.get(i));
+                System.out.println("Updated customer with the ID: " + customer.getId());
+                return customer.getId();
+            }
         }
-        sessionFactory.getCurrentSession().update(customer);
-        System.out.println("Updated customer with the ID: " + customer.getId());
-        return customer.getId();
+        return -1;
     }
 
     public List<Customer> getAllCustomers(){
