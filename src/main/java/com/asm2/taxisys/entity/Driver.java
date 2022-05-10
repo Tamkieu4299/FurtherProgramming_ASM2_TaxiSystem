@@ -30,10 +30,10 @@ public class Driver implements Serializable {
 
     @OneToOne(mappedBy="driver",cascade = CascadeType.ALL,fetch =FetchType.EAGER)
     @JoinColumn(name="carId")
-    @JsonManagedReference
+    @JsonBackReference
     private Car car;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "driver")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Invoice> invoices;
 
     @Column

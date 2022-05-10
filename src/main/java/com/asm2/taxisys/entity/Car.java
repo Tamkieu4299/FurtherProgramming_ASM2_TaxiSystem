@@ -40,12 +40,12 @@ public class Car{
     @Column
     private Double rating;
 
-    @Column
+
     private String licencePlate;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="driverId")
-    @JsonBackReference
+    @JsonManagedReference
     private Driver driver;
 
     @Column
@@ -54,7 +54,6 @@ public class Car{
     @Column
     @CreationTimestamp
     private ZonedDateTime time;
-
     public Car(){};
 
 

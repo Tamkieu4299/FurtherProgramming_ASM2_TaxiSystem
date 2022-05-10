@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -92,28 +93,28 @@ public class BookingService {
         return session.createQuery(cr).getResultList();
     }
 
-    public List<Booking> getAllBookingsBetween(Date start, Date end) {
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Booking> cr = cb.createQuery(Booking.class);
-        Root<Booking> root = cr.from(Booking.class);
-        final ZoneId zone = ZoneId.systemDefault();
-
-        Date endFinal = new Date(end.getTime() + (1000 * 60 * 60 * 24));
-        cr.select(root).where(cb.between(root.get("time"), ZonedDateTime.ofInstant(start.toInstant(), zone), ZonedDateTime.ofInstant(endFinal.toInstant(), zone)));
-        return session.createQuery(cr).getResultList();
+    public List<Booking> getAllBookingsBetween(Date start, Date end) throws ParseException {
+        List<Booking> bookingList= (List<Booking>) bookingRepo.findAll();
+        List<Booking> bookings=new ArrayList<>();
+        SimpleDateFormat format =new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        for (Booking booking:bookingList){
+            if (format.parse(booking.getDropTime()).compareTo(start)>=0 &&format.parse(booking.getDropTime()).compareTo(end)<=0){
+                bookings.add(booking);
+            }
+        }
+        return bookings;
     }
 
     public List<Driver> getFreeDrivers(Date time, List<Driver> allDrivers) throws Exception{
         List<Booking> bookings = this.getAllBookings();
         List<Driver> busyDrivers = new ArrayList<>();
         List<Driver> freeDrivers = new ArrayList<>();
-        SimpleDateFormat format =new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+        SimpleDateFormat format =new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
         for(Booking booking: bookings)
-            if(format.parse(booking.getDropTime()).compareTo(time)>0) {
-                Invoice curInvoice = invoiceRepo.findInvoiceById(booking.getInvoice());
-                Driver busyDriver = driverRepo.findDriverById(curInvoice.getDriver());
+            if(format.parse(booking.getDropTime()).compareTo(time)>0 && format.parse(booking.getPickTime()).compareTo(time)<=0 ) {
+                Invoice curInvoice = booking.getInvoice();
+                Driver busyDriver = curInvoice.getDriver();
                 busyDrivers.add(busyDriver);
             }
         for(Driver driver: allDrivers)

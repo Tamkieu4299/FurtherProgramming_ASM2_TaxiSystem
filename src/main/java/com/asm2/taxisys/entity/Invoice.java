@@ -12,10 +12,11 @@ public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    private Customer customer;
 
-    private Long customerId;
-
-    private Long driverId;
+    @ManyToOne
+    private Driver driver;
 
     private Long bookingId;
 
@@ -28,9 +29,9 @@ public class Invoice {
 
     public Invoice() {}
 
-    public Invoice(Long customerId, Long driverId){
-        this.customerId=customerId;
-        this.driverId=driverId;
+    public Invoice(Customer customerId, Driver driver){
+        this.customer=customerId;
+        this.driver=driver;
     }
 
     public Long getId() {
@@ -41,20 +42,20 @@ public class Invoice {
         this.id = id;
     }
 
-    public Long getCustomer() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomer(Long customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public Long getDriver() {
-        return driverId;
+    public Driver getDriver() {
+        return driver;
     }
 
-    public void setDriver(Long driverId) {
-        this.driverId = driverId;
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 
     public Double getTotalCharge() {

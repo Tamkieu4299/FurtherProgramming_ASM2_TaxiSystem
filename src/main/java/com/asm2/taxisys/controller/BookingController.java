@@ -86,14 +86,14 @@ public class BookingController {
 
     @GetMapping(path = "/on-date")
     public List<Booking> getAllBookingsOnDate(@RequestParam("onDate") String date) throws ParseException {
-        Date onDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        Date onDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(date);
         return bookingService.getAllBookingsOnDate(onDate);
     }
 
     @GetMapping(path = "/statistics")
     public List<Booking> getAllBookingsBetween(@RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {
-        Date sd = new SimpleDateFormat("yyyy-MM-dd").parse(start);
-        Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(end);
+        Date sd = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(start);
+        Date ed = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(end);
         return bookingService.getAllBookingsBetween(sd, ed);
     }
 }

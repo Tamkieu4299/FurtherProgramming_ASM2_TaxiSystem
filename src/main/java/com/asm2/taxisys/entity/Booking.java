@@ -28,7 +28,8 @@ public class Booking {
     @Column
     private Long tripDistance;
 
-    private Long invoiceId;
+    @OneToOne
+    private Invoice invoice;
 
     @CreationTimestamp
     @Column
@@ -36,10 +37,10 @@ public class Booking {
 
     public Booking() {}
 
-    public Booking(String pickTime, String dropTime, Long invoice){
+    public Booking(String pickTime, String dropTime, Invoice invoice){
         this.pickTime = pickTime;
         this.dropTime = dropTime;
-        this.invoiceId = invoice;
+        this.invoice = invoice;
     }
 
     public Long getId() {
@@ -98,11 +99,11 @@ public class Booking {
         this.time = time;
     }
 
-    public Long getInvoice() {
-        return invoiceId;
+    public Invoice getInvoice() {
+        return invoice;
     }
 
-    public void setInvoice(Long invoice) {
-        this.invoiceId = invoice;
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

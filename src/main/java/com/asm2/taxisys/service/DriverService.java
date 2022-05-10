@@ -28,18 +28,18 @@ public class DriverService {
         this.sessionFactory = sessionFactory;
     }
 
-    public long saveDriver(Driver driver){
+    public Driver saveDriver(Driver driver){
         String licenseNumber = driver.getLicenseNumber();
         List<Driver> driversList = (List<Driver>) driverRepo.findAll();
         for(Driver d: driversList){
             if(d.getLicenseNumber().equals(licenseNumber)) {
                 System.out.println("Existed driver !");
-                return -1;
+                return null;
             }
         }
         driverRepo.save(driver);
         System.out.println("Created driver with the ID: " + driver.getId());
-        return driver.getId();
+        return driver;
     }
 
     public void deleteDriver(Long id){

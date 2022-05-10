@@ -1,10 +1,9 @@
 package com.asm2.taxisys.controller;
 
-import com.asm2.taxisys.entity.Car;
-import com.asm2.taxisys.entity.Customer;
-import com.asm2.taxisys.entity.Driver;
-import com.asm2.taxisys.entity.Invoice;
+import com.asm2.taxisys.entity.*;
+import com.asm2.taxisys.repo.BookingRepo;
 import com.asm2.taxisys.repo.CarRepo;
+import com.asm2.taxisys.repo.InvoiceRepo;
 import com.asm2.taxisys.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -36,10 +35,14 @@ public class CustomerBookingController {
 
     @Autowired
     private CarRepo carRepo;
+    @Autowired
+    private InvoiceRepo invoiceRepo;
+    @Autowired
+    private BookingRepo bookingRepo;
 
     @GetMapping(path = "/view-cars")
     public List<Car> getFreeCars(@RequestParam("pickTime") String pickTime ) throws Exception{
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         Date time = format.parse(pickTime);
 
         List<Driver> allDrivers = driverService.getAllDrivers();
@@ -51,22 +54,41 @@ public class CustomerBookingController {
                 freeCars.add(driver.getCar());
         return freeCars;
     }
-
     @PostMapping(path = "/book-car")
-    public Long bookCar(@RequestParam("customerId") Long customerId, @RequestParam("carId") Long carId, @RequestParam("pickup") String pickup, @RequestParam("drop") String drop ) throws Exception{
-        if(!this.getFreeCars(pickup).contains(this.carService.getById(carId))) {
+    public Long bookCar(@RequestParam("customerId") Long customerId, @RequestParam("carId") Long carId, @RequestParam("pickup") String pickup, @RequestParam("drop") String drop,@RequestParam("totalCharge") double totalCharge,@RequestParam("startLocation") String startLocation,@RequestParam("endLocation") String endLocation,@RequestParam("tripDistance") Long tripDistance ) throws Exception{
+        boolean canSelected=false;
+        for (Car car:this.getFreeCars(pickup)){
+            if(car.getId().equals(carId)) {
+                canSelected=true;
+                break;
+            }
+        }
+        if (!canSelected){
             System.out.println("This car is busy at that time! Please check again");
             return  0L;
         }
+
 //        Customer customer = customerService.getById(customerId);
         Long driverId  = carRepo.findCarById(carId).getDriver().getId();
-
+        Booking booking=new Booking();
         Invoice invoice = new Invoice();
-        invoice.setCustomer(customerId);
-        invoice.setDriver(driverId);
+        invoice.setCustomer(customerService.getById(customerId));
+        invoice.setDriver(driverService.getById(driverId));
+        invoice.setTotalCharge(totalCharge);
+        invoiceRepo.save(invoice);
+        booking.setDropTime(drop);
+        booking.setEndLocation(endLocation);
+        booking.setPickTime(pickup);
+        booking.setInvoice(invoice);
+        booking.setStartLocation(startLocation);
+        booking.setTripDistance(tripDistance);
+        bookingRepo.save(booking);
 
-        invoiceController.addInvoice(invoice);
+//        invoice.setTime(pickup);
+//        invoice.get
+//        invoiceController.addInvoice(invoice);
 
         return invoice.getId();
     }
+
 }

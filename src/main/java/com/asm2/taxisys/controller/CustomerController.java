@@ -1,6 +1,10 @@
 package com.asm2.taxisys.controller;
 
+import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.entity.Customer;
+import com.asm2.taxisys.entity.Driver;
+import com.asm2.taxisys.service.BookingService;
+import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.CustomerService;
 import com.asm2.taxisys.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +14,7 @@ import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 import java.util.List;
-
+import java.util.HashMap;
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -20,6 +24,11 @@ public class CustomerController {
 
     @Autowired
     private CustomerRepo customerRepo;
+
+    @Autowired
+    private CarService carService;
+    @Autowired
+    private BookingService bookingService;
 
     public CustomerController(CustomerRepo customerRepo) {
         this.customerRepo = customerRepo;
@@ -70,6 +79,24 @@ public class CustomerController {
         return customerRepo.findAll(phoneSpec);
     }
 
+    @GetMapping(path = "/view-free-car/")
+    public HashMap<Long,String> getFreeCar(@RequestParam String date) throws Exception{
+        HashMap<Long,String> ans = new HashMap<Long,String>();
+        List<Car> freeCars=carService.getFreeCars(date);
+        for (Car car:freeCars){
+            ans.put(car.getId(),car.getLicencePlate());
+        }
+        return ans;
+    }
+//    @PostMapping(path = "/select-car/")
+//    public HashMap<Long,String> getFreeCar(@RequestParam String date) throws Exception{
+//        HashMap<Long,String> ans = new HashMap<Long,String>();
+//        List<Car> freeCars=carService.getFreeCars(date);
+//        for (Car car:freeCars){
+//            ans.put(car.getId(),car.getLicencePlate());
+//        }
+//        return ans;
+//    }
 
 
 

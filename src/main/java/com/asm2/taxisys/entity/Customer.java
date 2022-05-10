@@ -25,9 +25,9 @@ public class Customer{
     @Column
     private String address;
 
+    @OneToMany
     @Column
-    @ElementCollection(targetClass=Long.class)
-    private List<Long> invoices;
+    private List<Invoice> invoices;
 
     @CreationTimestamp
     @Column

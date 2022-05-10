@@ -17,7 +17,7 @@ import java.util.List;
 //            "color": "black",
 //            "convertible": true,
 //            "rating": 5.00,
-//            "licensePlate": "70H-123",
+//            "licencePlate": "70H-123",
 //            "ratePerKm": 4.787
 @RestController
 @RequestMapping("/cars")
@@ -34,7 +34,8 @@ public class CarController {
     }
 
     @RequestMapping(path = "/addCar", method = RequestMethod.POST)
-    public long addCar(@RequestBody Car car){
+    public Car addCar(@RequestBody Car car){
+        System.out.println(car.getLicencePlate());
         return carService.saveCar(car);
     }
 
