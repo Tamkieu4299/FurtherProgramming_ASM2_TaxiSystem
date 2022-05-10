@@ -28,7 +28,6 @@ public class Booking {
     @Column
     private Long tripDistance;
 
-
     private Long invoiceId;
 
     @CreationTimestamp
