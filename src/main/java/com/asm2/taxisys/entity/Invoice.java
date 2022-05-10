@@ -13,12 +13,9 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private Long customerId;
 
-
     private Long driverId;
-
 
     private Long bookingId;
 

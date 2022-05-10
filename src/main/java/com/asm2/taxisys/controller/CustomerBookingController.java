@@ -4,8 +4,10 @@ import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.entity.Customer;
 import com.asm2.taxisys.entity.Driver;
 import com.asm2.taxisys.entity.Invoice;
+import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +34,9 @@ public class CustomerBookingController {
     @Autowired
     private BookingService bookingService;
 
+    @Autowired
+    private CarRepo carRepo;
+
     @GetMapping(path = "/view-cars")
     public List<Car> getFreeCars(@RequestParam("pickTime") String pickTime ) throws Exception{
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
@@ -42,9 +47,8 @@ public class CustomerBookingController {
         List<Car> freeCars = new ArrayList<>();
 
         for(Driver driver: freeDrivers)
-            if(driver.getCarId()!=null)
-                freeCars.add(carService.getById(driver.getCarId()));
-
+            if(driver.getCar()!=null)
+                freeCars.add(driver.getCar());
         return freeCars;
     }
 
@@ -55,7 +59,7 @@ public class CustomerBookingController {
             return  0L;
         }
 //        Customer customer = customerService.getById(customerId);
-        Long driverId  = carService.getById(carId).getDriverId();
+        Long driverId  = carRepo.findCarById(carId).getDriver().getId();
 
         Invoice invoice = new Invoice();
         invoice.setCustomer(customerId);

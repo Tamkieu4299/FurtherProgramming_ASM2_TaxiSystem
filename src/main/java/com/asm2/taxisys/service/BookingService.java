@@ -2,7 +2,10 @@ package com.asm2.taxisys.service;
 
 import com.asm2.taxisys.entity.Booking;
 import com.asm2.taxisys.entity.Driver;
+import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.repo.BookingRepo;
+import com.asm2.taxisys.repo.DriverRepo;
+import com.asm2.taxisys.repo.InvoiceRepo;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,6 +31,12 @@ public class BookingService {
 
     @Autowired
     private BookingRepo bookingRepo;
+
+    @Autowired
+    private DriverRepo driverRepo;
+
+    @Autowired
+    private InvoiceRepo invoiceRepo;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -102,8 +111,11 @@ public class BookingService {
         SimpleDateFormat format =new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 
         for(Booking booking: bookings)
-            if(format.parse(booking.getDropTime()).compareTo(time)>0)
-                busyDrivers.add(booking.getInvoice().getDriver());
+            if(format.parse(booking.getDropTime()).compareTo(time)>0) {
+                Invoice curInvoice = invoiceRepo.findInvoiceById(booking.getInvoice());
+                Driver busyDriver = driverRepo.findDriverById(curInvoice.getDriver());
+                busyDrivers.add(busyDriver);
+            }
         for(Driver driver: allDrivers)
             if(!busyDrivers.contains(driver)) freeDrivers.add(driver);
 

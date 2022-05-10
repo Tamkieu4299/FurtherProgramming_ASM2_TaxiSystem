@@ -1,6 +1,8 @@
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Invoice;
+import com.asm2.taxisys.repo.CarRepo;
+import com.asm2.taxisys.repo.DriverRepo;
 import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.DriverService;
 import com.asm2.taxisys.service.InvoiceService;
@@ -23,6 +25,12 @@ public class DashBoardController {
     private CarService carService;
     @Autowired
     private DriverService driverService;
+
+    @Autowired
+    private CarRepo carRepo;
+
+    @Autowired
+    private DriverRepo driverRepo;
 
 //    @GetMapping(path = "/total-revenue-period")
 //    public Map<String, Object> getRevenue(@RequestParam("start") String start,
@@ -97,7 +105,7 @@ public class DashBoardController {
         Map<String, Set<ZonedDateTime>> checkRepeatDate = new HashMap<>();
         Map<String, Integer> result = new HashMap<>();
         for(Invoice invoice: invoices){
-            String carLicensePlate =carService.getById(driverService.getById(invoice.getDriver()).getCarId()).getLicencePlate();
+            String carLicensePlate =carRepo.findCarById(driverRepo.findDriverById(invoice.getDriver()).getCar().getId()).getLicencePlate();
             if(!result.containsKey(carLicensePlate)) {
                 result.put(carLicensePlate, 0);
                 Set<ZonedDateTime> days = new HashSet<>();
