@@ -5,6 +5,8 @@ import com.asm2.taxisys.repo.BookingRepo;
 import com.asm2.taxisys.service.BookingService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
@@ -14,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/bookings")
@@ -60,28 +63,68 @@ public class BookingController {
     }
 
     @GetMapping(params = {"startLocation"})
-    public Iterable<Booking> searchBookingByStartLocation(@Spec(path = "startLocation", params = "startLocation", spec = LikeIgnoreCase.class) Specification<Booking> startLocationSpec) {
-        return bookingRepo.findAll(startLocationSpec);
+    public Iterable<Booking> searchBookingByStartLocation(
+            @Spec(path = "startLocation", params = "startLocation", spec = LikeIgnoreCase.class) Specification<Booking> startLocationSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return bookingRepo.findAll(startLocationSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"endLocation"})
-    public Iterable<Booking> searchBookingByEndLocation(@Spec(path = "endLocation", params = "endLocation", spec = LikeIgnoreCase.class) Specification<Booking> endLocationSpec) {
-        return bookingRepo.findAll(endLocationSpec);
+    public Iterable<Booking> searchBookingByEndLocation(
+            @Spec(path = "endLocation", params = "endLocation", spec = LikeIgnoreCase.class) Specification<Booking> endLocationSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return bookingRepo.findAll(endLocationSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"pickTime"})
-    public Iterable<Booking> searchBookingByPickTime(@Spec(path = "pickTime", params = "pickTime", spec = LikeIgnoreCase.class) Specification<Booking> pickTimeSpec) {
-        return bookingRepo.findAll(pickTimeSpec);
+    public Iterable<Booking> searchBookingByPickTime(
+            @Spec(path = "pickTime", params = "pickTime", spec = LikeIgnoreCase.class) Specification<Booking> pickTimeSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return bookingRepo.findAll(pickTimeSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"dropTime"})
-    public Iterable<Booking> searchBookingByDropTime(@Spec(path = "dropTime", params = "dropTime", spec = LikeIgnoreCase.class) Specification<Booking> dropTimeSpec) {
-        return bookingRepo.findAll(dropTimeSpec);
+    public Iterable<Booking> searchBookingByDropTime(
+            @Spec(path = "dropTime", params = "dropTime", spec = LikeIgnoreCase.class) Specification<Booking> dropTimeSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return bookingRepo.findAll(dropTimeSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"tripDistance"})
-    public Iterable<Booking> searchBookingByTripDistance(@Spec(path = "tripDistance", params = "tripDistance", spec = LikeIgnoreCase.class) Specification<Booking> tripDistanceSpec) {
-        return bookingRepo.findAll(tripDistanceSpec);
+    public Iterable<Booking> searchBookingByTripDistance(
+            @Spec(path = "tripDistance", params = "tripDistance", spec = LikeIgnoreCase.class) Specification<Booking> tripDistanceSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return bookingRepo.findAll(tripDistanceSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
 

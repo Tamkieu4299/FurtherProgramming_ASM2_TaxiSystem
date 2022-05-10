@@ -5,12 +5,16 @@ import com.asm2.taxisys.entity.Customer;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 import java.util.List;
+import java.util.Optional;
 
 //    "make": "Audi",
 //            "model": "2022",
@@ -56,9 +60,23 @@ public class CarController {
         return carService.updateCar(car);
     }
 
-    @RequestMapping(path = "/allCars", method = RequestMethod.GET)
-    public List<Car> getAllCars(){
-        return carService.getAllCars();
+//    @RequestMapping(path = "/allCars", method = RequestMethod.GET)
+//    public List<Car> getAllCars(){
+//        return carService.getAllCars();
+//    }
+
+    @GetMapping(path = "/allCars")
+    Page<Car> getAllCars(
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy
+    ) {
+        return carRepo.findAll(
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                )
+        );
     }
 
     @RequestMapping(path = "/getCar/{id}")
@@ -67,37 +85,94 @@ public class CarController {
     }
 
     @GetMapping(params = {"make"})
-    public Iterable<Car> searchCarByMake(@Spec(path = "make", params = "make", spec = LikeIgnoreCase.class) Specification<Car> makeSpec) {
-        return carRepo.findAll(makeSpec);
+    public Iterable<Car> searchCarByMake(
+            @Spec(path = "make", params = "make", spec = LikeIgnoreCase.class) Specification<Car> makeSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(makeSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"model"})
-    public Iterable<Car> searchCarByModel(@Spec(path = "model", params = "model", spec = LikeIgnoreCase.class) Specification<Car> modelSpec) {
-        return carRepo.findAll(modelSpec);
+    public Iterable<Car> searchCarByModel(
+            @Spec(path = "model", params = "model", spec = LikeIgnoreCase.class) Specification<Car> modelSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(modelSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                )
+        );
     }
 
     @GetMapping(params = {"color"})
-    public Iterable<Car> searchCarByColor(@Spec(path = "color", params = "color", spec = LikeIgnoreCase.class) Specification<Car> colorSpec) {
-        return carRepo.findAll(colorSpec);
+    public Iterable<Car> searchCarByColor(
+            @Spec(path = "color", params = "color", spec = LikeIgnoreCase.class) Specification<Car> colorSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(colorSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"convertible"})
-    public Iterable<Car> searchCarByConvertible(@Spec(path = "convertible", params = "convertible", spec = LikeIgnoreCase.class) Specification<Car> convertibleSpec) {
-        return carRepo.findAll(convertibleSpec);
+    public Iterable<Car> searchCarByConvertible(
+            @Spec(path = "convertible", params = "convertible", spec = LikeIgnoreCase.class) Specification<Car> convertibleSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(convertibleSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"rating"})
-    public Iterable<Car> searchCarByRating(@Spec(path = "rating", params = "rating", spec = LikeIgnoreCase.class) Specification<Car> ratingSpec) {
-        return carRepo.findAll(ratingSpec);
+    public Iterable<Car> searchCarByRating(
+            @Spec(path = "rating", params = "rating", spec = LikeIgnoreCase.class) Specification<Car> ratingSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(ratingSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"licencePlate"})
-    public Iterable<Car> searchCarByLicencePlate(@Spec(path = "licencePlate", params = "licencePlate", spec = LikeIgnoreCase.class) Specification<Car> licencePlateSpec) {
-        return carRepo.findAll(licencePlateSpec);
+    public Iterable<Car> searchCarByLicencePlate(
+            @Spec(path = "licencePlate", params = "licencePlate", spec = LikeIgnoreCase.class) Specification<Car> licencePlateSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(licencePlateSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 
     @GetMapping(params = {"ratePerKm"})
-    public Iterable<Car> searchCarByRatePerKm(@Spec(path = "ratePerKm", params = "ratePerKm", spec = LikeIgnoreCase.class) Specification<Car> ratePerKmSpec) {
-        return carRepo.findAll(ratePerKmSpec);
+    public Iterable<Car> searchCarByRatePerKm(
+            @Spec(path = "ratePerKm", params = "ratePerKm", spec = LikeIgnoreCase.class) Specification<Car> ratePerKmSpec,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        return carRepo.findAll(ratePerKmSpec,
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                ));
     }
 }

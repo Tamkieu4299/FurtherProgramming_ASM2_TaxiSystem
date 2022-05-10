@@ -52,7 +52,7 @@ public class AppConfig {
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/asm2Database");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("180901");
+        dataSource.setPassword("123");
 
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);

@@ -1,10 +1,14 @@
 package com.asm2.taxisys.controller;
 
+import com.asm2.taxisys.entity.Customer;
 import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.repo.InvoiceRepo;
 import com.asm2.taxisys.service.InvoiceService;
 import net.kaczmarzyk.spring.data.jpa.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -14,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/invoices")
@@ -49,9 +54,23 @@ public class InvoiceController {
         return invoiceService.updateInvoice(invoice);
     }
 
-    @RequestMapping(path = "/allInvoices", method = RequestMethod.GET)
-    public List<Invoice> getAllInvoices(){
-        return invoiceService.getAllInvoices();
+//    @RequestMapping(path = "/allInvoices", method = RequestMethod.GET)
+//    public List<Invoice> getAllInvoices(){
+//        return invoiceService.getAllInvoices();
+//    }
+
+    @GetMapping(path = "/allInvoices")
+    Page<Invoice> getAllInvoices(
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy
+    ) {
+        return invoiceRepo.findAll(
+                PageRequest.of(
+                        page.orElse(0),
+                        5,
+                        Sort.Direction.ASC, sortBy.orElse("id")
+                )
+        );
     }
 
     @RequestMapping(path = "/getInvoice/{id}")
