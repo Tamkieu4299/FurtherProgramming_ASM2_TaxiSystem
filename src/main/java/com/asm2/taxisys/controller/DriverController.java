@@ -56,9 +56,8 @@ public class DriverController {
     }
 
     @RequestMapping(path = "/updateDriver/{id}", method = RequestMethod.POST)
-    public long updateDriver(@PathVariable Long id){
-        Driver driver = driverService.getById(id);
-        return driverService.updateDriver(driver);
+    public Driver updateDriver(@PathVariable Long id,@RequestBody Driver updatedDriver){
+        return driverService.updateDriver(updatedDriver);
     }
 
     @RequestMapping(path = "/allDrivers", method = RequestMethod.GET)
@@ -85,12 +84,6 @@ public class DriverController {
     public Iterable<Driver> searchDriverByPhone(@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Driver> phoneSpec) {
         return driverRepo.findAll(phoneSpec);
     }
-
-
-//    @PostMapping(path = "/test/{id}")
-//    public Long selectCar(@PathVariable("id") Long id, @RequestParam("carId") Long carId){
-//        return driverService.selectCar(id , carId);
-//    }
 
     @PostMapping(path = "/select-car/{id}")
     public void selectCar(@RequestParam("carId") Long carId, @PathVariable("id") Long id){

@@ -46,58 +46,17 @@ public class DriverService {
         sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Driver.class, id));
     }
 
-
-    public Long selectCar(Long driverID, Long carID){
-        Driver driver = driverRepo.findDriverById(driverID);
-        Car car = carRepo.findCarById(carID);
-        if (car.getDriver() ==  null){
-            car.setDriver(driver);
-            driver.setCar(car);
-            driverRepo.save(driver);
-            carRepo.save(car);
-            return driverID;
-        }
-        System.out.println("Car is already selected");
-        return driverID;
-    }
-
-    public long updateDriver(Driver driver){
+    public Driver updateDriver(Driver driver){
         List<Driver> driversList = this.getAllDrivers();
         for (int i=0;i<driversList.size();i+=1){
             if (driversList.get(i).getId()==driver.getId()){
-//                System.out.println(driver.getCar().getId());
-
                 driverRepo.save(driver);
-                return driver.getId();
+                return driver;
             }
         }
-        return -1;
+        return null;
     }
-    public long select(Driver driver,Car car){
-        List<Driver> driversList = this.getAllDrivers();
-        for (int i=0;i<driversList.size();i+=1){
-            if (driversList.get(i).getId()==driver.getId()){
-                Driver a=this.getById(driver.getId());
-                Car b=carService.getById(car.getId());
-                a.setCar(b);
-//                String hql = "UPDATE Driver set car = :car "  +
-//                        "WHERE id = :driverId";
-//                Query query = sessionFactory.getCurrentSession().createQuery(hql);
-//                query.setParameter("car", driver.getCar());
-//                query.setParameter("driverId", driver.getId());
-//                int result = query.executeUpdate();
-//                System.out.println("Rows affected: " + result);
-                sessionFactory.getCurrentSession().evict(driver);
-                sessionFactory.getCurrentSession().update(driver);
 
-//                sessionFactory.getCurrentSession().merge(driver);
-//                sessionFactory.getCurrentSession().evict(driver);
-//                System.out.println("Updated car with the ID: " + driver.getId());
-                return driver.getId();
-            }
-        }
-        return -1;
-    }
 
     public List<Driver> getAllDrivers(){
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Driver.class);

@@ -50,7 +50,7 @@ public class CarController {
     }
 
     @RequestMapping(path = "/updateCar/{id}", method = RequestMethod.PUT)
-    public long updateCar(@PathVariable Long id, @RequestBody Car car){
+    public Car updateCar(@PathVariable Long id, @RequestBody Car car){
 //        Car car = carService.getById(id);
         System.out.println(car.getMake());
         return carService.updateCar(car);

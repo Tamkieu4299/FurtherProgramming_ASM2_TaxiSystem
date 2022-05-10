@@ -74,17 +74,6 @@ public class InvoiceService {
         return (Invoice) sessionFactory.getCurrentSession().get(Invoice.class, id);
     }
 
-    public List<Invoice> getAllInvoicesOnDate(Date onDate) {
-//        Session session = sessionFactory.openSession();
-//        CriteriaBuilder cb = session.getCriteriaBuilder();
-//        CriteriaQuery<Invoice> cr = cb.createQuery(Invoice.class);
-//        Root<Invoice> root = cr.from(Invoice.class);
-//        final ZoneId zone = ZoneId.systemDefault();
-//        cr.select(root).where(cb.equal(root.get("time"), ZonedDateTime.ofInstant(onDate.toInstant(), zone)));
-//        return session.createQuery(cr).getResultList();
-        return new ArrayList<>();
-    }
-
     public List<Invoice> getAllInvoicesBetween(Date start, Date end) throws ParseException {
         List<Booking> bookings=bookingService.getAllBookingsBetween(start,end);
         List<Invoice> invoices=new ArrayList<>();

@@ -35,7 +35,7 @@ public class CustomerController {
     }
 
     @RequestMapping(path = "/addCustomer", method = RequestMethod.POST)
-    public long addCustomer(@RequestBody Customer customer){
+    public Customer addCustomer(@RequestBody Customer customer){
         return customerService.saveCustomer(customer);
     }
 
@@ -50,7 +50,7 @@ public class CustomerController {
     }
 
     @RequestMapping(path = "/updateCustomer", method = RequestMethod.PUT)
-    public long updateCustomer(@RequestBody Customer customer){
+    public Customer updateCustomer(@RequestBody Customer customer){
         return customerService.updateCustomer(customer);
     }
 
@@ -78,30 +78,5 @@ public class CustomerController {
     public Iterable<Customer> searchCustomerByPhone(@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Customer> phoneSpec) {
         return customerRepo.findAll(phoneSpec);
     }
-
-    @GetMapping(path = "/view-free-car/")
-    public HashMap<Long,String> getFreeCar(@RequestParam String date) throws Exception{
-        HashMap<Long,String> ans = new HashMap<Long,String>();
-        List<Car> freeCars=carService.getFreeCars(date);
-        for (Car car:freeCars){
-            ans.put(car.getId(),car.getLicencePlate());
-        }
-        return ans;
-    }
-//    @PostMapping(path = "/select-car/")
-//    public HashMap<Long,String> getFreeCar(@RequestParam String date) throws Exception{
-//        HashMap<Long,String> ans = new HashMap<Long,String>();
-//        List<Car> freeCars=carService.getFreeCars(date);
-//        for (Car car:freeCars){
-//            ans.put(car.getId(),car.getLicencePlate());
-//        }
-//        return ans;
-//    }
-
-
-
-
-
-
 
 }

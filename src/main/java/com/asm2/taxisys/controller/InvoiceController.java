@@ -59,11 +59,6 @@ public class InvoiceController {
         return invoiceService.getById(id);
     }
 
-    @GetMapping(path = "/on-date")
-    public List<Invoice> getAllInvoicesOnDate(@RequestParam("onDate") String date) throws ParseException {
-        Date onDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(date);
-        return invoiceService.getAllInvoicesOnDate(onDate);
-    }
 
     @GetMapping(path = "/in-period")
     public List<Invoice> getAllInvoicesBetween(@RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {

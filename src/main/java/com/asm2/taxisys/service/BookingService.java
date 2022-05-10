@@ -43,35 +43,27 @@ public class BookingService {
         this.sessionFactory = sessionFactory;
     }
 
-    public long saveBooking(Booking booking){
-        Long id = booking.getId();
-        List<Booking> bookingsList = this.getAllBookings();
-        for(Booking d: bookingsList){
-            if(d.getId()==id) {
-                System.out.println("Existed booking !");
-                return -1;
-            }
-        }
+    public Booking saveBooking(Booking booking){
+
         bookingRepo.save(booking);
-        System.out.println("Created booking with the ID: " + booking.getId());
-        return booking.getId();
+        return booking;
     }
 
     public void deleteBooking(Long id){
         sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Booking.class, id));
     }
 
-    public long updateBooking(Booking booking){
+    public Booking updateBooking(Booking booking){
         List<Booking> bookingsList = this.getAllBookings();
 
         for (Booking b:bookingsList){
             if (b.getId()==booking.getId()){
                 bookingRepo.save(booking);
                 System.out.println("Updated invoice with the ID: " + booking.getId());
-                return booking.getId();
+                return booking;
             }
         }
-        return -1;
+        return null;
     }
 
     public List<Booking> getAllBookings(){
@@ -83,15 +75,6 @@ public class BookingService {
         return (Booking) sessionFactory.getCurrentSession().get(Booking.class, id);
     }
 
-    public List<Booking> getAllBookingsOnDate(Date onDate) {
-        Session session = sessionFactory.openSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Booking> cr = cb.createQuery(Booking.class);
-        Root<Booking> root = cr.from(Booking.class);
-        final ZoneId zone = ZoneId.systemDefault();
-        cr.select(root).where(cb.equal(root.get("time"), ZonedDateTime.ofInstant(onDate.toInstant(), zone)));
-        return session.createQuery(cr).getResultList();
-    }
 
     public List<Booking> getAllBookingsBetween(Date start, Date end) throws ParseException {
         List<Booking> bookingList= (List<Booking>) bookingRepo.findAll();

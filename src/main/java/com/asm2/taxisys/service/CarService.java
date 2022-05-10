@@ -43,32 +43,19 @@ public class CarService {
         sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Car.class, id));
     }
 
-    public long updateCar(Car car){
+    public Car updateCar(Car car){
 
         List<Car> carsList = this.getAllCars();
         for (int i=0;i<carsList.size();i+=1){
             if (carsList.get(i).getId()==car.getId()){
                 carRepo.save(car);
-                return car.getId();
+                return car;
             }
         }
-        return -1;
+        return null;
 
     }
-    public long select(Car car,Driver driver){
 
-        List<Car> carsList = this.getAllCars();
-        for (int i=0;i<carsList.size();i+=1){
-            if (carsList.get(i).getId()==car.getId()){
-                car.setDriver(driver);
-                sessionFactory.getCurrentSession().persist(car);
-                System.out.println("Updated car with the ID: " + car.getId());
-                return car.getId();
-            }
-        }
-        return -1;
-
-    }
     public List<Car> getAllCars(){
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Car.class);
         return criteria.list();

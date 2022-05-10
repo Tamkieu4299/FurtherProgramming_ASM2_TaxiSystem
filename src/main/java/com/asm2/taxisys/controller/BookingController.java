@@ -30,7 +30,7 @@ public class BookingController {
     }
 
     @RequestMapping(path = "/addBooking", method = RequestMethod.POST)
-    public long addBooking(@RequestBody Booking booking){
+    public Booking addBooking(@RequestBody Booking booking){
         return bookingService.saveBooking(booking);
     }
 
@@ -45,7 +45,7 @@ public class BookingController {
     }
 
     @RequestMapping(path = "/updateBooking", method = RequestMethod.PUT)
-    public long updateBooking(@RequestBody Booking booking){
+    public Booking updateBooking(@RequestBody Booking booking){
         return bookingService.updateBooking(booking);
     }
 
@@ -84,11 +84,6 @@ public class BookingController {
         return bookingRepo.findAll(tripDistanceSpec);
     }
 
-    @GetMapping(path = "/on-date")
-    public List<Booking> getAllBookingsOnDate(@RequestParam("onDate") String date) throws ParseException {
-        Date onDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(date);
-        return bookingService.getAllBookingsOnDate(onDate);
-    }
 
     @GetMapping(path = "/statistics")
     public List<Booking> getAllBookingsBetween(@RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {

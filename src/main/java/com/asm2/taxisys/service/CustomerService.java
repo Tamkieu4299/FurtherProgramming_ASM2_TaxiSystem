@@ -25,35 +25,25 @@ public class CustomerService {
         this.sessionFactory = sessionFactory;
     }
 
-    public long saveCustomer(Customer customer){
-        Long id = customer.getId();
-        List<Customer> customersList = this.getAllCustomers();
-        for(Customer c: customersList){
-            if(c.getId()==id) {
-                System.out.println("Existed customer !");
-                return -1;
-            }
-        }
+    public Customer saveCustomer(Customer customer){
+
         sessionFactory.getCurrentSession().save(customer);
-        System.out.println("Created customer with the ID: " + customer.getId());
-        return customer.getId();
+        return customer;
     }
 
     public void deleteCustomer(Long id){
         sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Customer.class, id));
     }
 
-    public long updateCustomer(Customer customer){
+    public Customer updateCustomer(Customer customer){
         List<Customer> customersList = this.getAllCustomers();
         for (int i = 0; i < customersList.size(); i += 1) {
             if (customersList.get(i).getId().equals(customer.getId())) {
-                customersList.set(i,customer);
-                sessionFactory.getCurrentSession().merge(customersList.get(i));
-                System.out.println("Updated customer with the ID: " + customer.getId());
-                return customer.getId();
+                customerRepo.save(customer);
+                return customer;
             }
         }
-        return -1;
+        return null;
     }
 
     public List<Customer> getAllCustomers(){
