@@ -44,7 +44,6 @@ public class CarService {
     }
 
     public Car updateCar(Car car){
-
         List<Car> carsList = this.getAllCars();
         for (int i=0;i<carsList.size();i+=1){
             if (carsList.get(i).getId()==car.getId()){

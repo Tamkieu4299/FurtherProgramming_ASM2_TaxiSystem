@@ -26,6 +26,9 @@ public class Car{
     private ZonedDateTime createdDate = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
     @Column
+    private String vin; // Vehicle identification number
+
+    @Column
     private String make;
 
     @Column
@@ -55,8 +58,10 @@ public class Car{
     @CreationTimestamp
     private ZonedDateTime time;
     public Car(){};
-
-
+    public Car(Long id, String model){
+        this.id=id;
+        this.model=model;
+    }
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

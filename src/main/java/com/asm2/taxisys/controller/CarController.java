@@ -1,8 +1,6 @@
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Car;
-import com.asm2.taxisys.entity.Customer;
-import com.asm2.taxisys.entity.Driver;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
-import java.util.List;
 import java.util.Optional;
 
 //    "make": "Audi",
@@ -39,7 +36,6 @@ public class CarController {
 
     @RequestMapping(path = "/addCar", method = RequestMethod.POST)
     public Car addCar(@RequestBody Car car){
-        System.out.println(car.getLicencePlate());
         return carService.saveCar(car);
     }
 
@@ -71,6 +67,11 @@ public class CarController {
     @RequestMapping(path = "/getCar/{id}")
     public Car getById(@PathVariable Long id){
         return carService.getById(id);
+    }
+
+    @GetMapping(params = {"vin"})
+    public Page<Car> searchCarByVIN(@RequestParam Optional<Integer> page, @Spec(path = "vin", params = "vin", spec = LikeIgnoreCase.class) Specification<Car> vinSpec) {
+        return carRepo.findAll(vinSpec, PageRequest.of(page.orElse(0),5));
     }
 
     @GetMapping(params = {"make"})
