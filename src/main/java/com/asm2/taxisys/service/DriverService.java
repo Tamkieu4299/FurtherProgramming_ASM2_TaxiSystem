@@ -1,5 +1,4 @@
 package com.asm2.taxisys.service;
-import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.entity.Driver;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.repo.DriverRepo;
@@ -7,7 +6,6 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -57,7 +55,6 @@ public class DriverService {
         return null;
     }
 
-
     public List<Driver> getAllDrivers(){
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Driver.class);
         return criteria.list();
@@ -65,7 +62,7 @@ public class DriverService {
 
     public Driver getById(Long id){
         List<Driver> driversList = this.getAllDrivers();
-        for (int i=0;i<driversList.size();i+=1){
+        for(int i=0;i<driversList.size();i+=1){
             if (driversList.get(i).getId()==id){
                 return driversList.get(i);
             }
