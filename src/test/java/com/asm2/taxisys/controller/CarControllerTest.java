@@ -87,8 +87,7 @@ class CarControllerTest {
         }
         mvc.perform(get("/cars/allCars?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.content", hasSize(5)));
+                .andExpect(jsonPath("$", hasSize(5)));
 //                .andExpect(jsonPath("$.data[0].id", is(1)));
 
     }
