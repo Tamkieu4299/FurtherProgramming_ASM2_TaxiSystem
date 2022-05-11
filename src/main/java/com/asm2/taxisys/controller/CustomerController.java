@@ -8,6 +8,8 @@ import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.CustomerService;
 import com.asm2.taxisys.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
@@ -15,6 +17,8 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -54,9 +58,10 @@ public class CustomerController {
         return customerService.updateCustomer(customer);
     }
 
+
     @RequestMapping(path = "/allCustomers", method = RequestMethod.GET)
-    public List<Customer> getAllCustomers(){
-        return customerService.getAllCustomers();
+    Page<Customer> getAllCustomers(@RequestParam Optional<Integer> page){
+        return customerRepo.findAll(PageRequest.of(page.orElse(0),5));
     }
 
     @RequestMapping(path = "/getCustomer/{id}")
@@ -65,18 +70,18 @@ public class CustomerController {
     }
 
     @GetMapping(params = {"name"})
-    public Iterable<Customer> searchCustomerByName(@Spec(path = "name", params = "name", spec = LikeIgnoreCase.class) Specification<Customer> nameSpec) {
-        return customerRepo.findAll(nameSpec);
+    public Page<Customer> searchCustomerByName(@RequestParam Optional<Integer> page, @Spec(path = "name", params = "name", spec = LikeIgnoreCase.class) Specification<Customer> nameSpec) {
+        return customerRepo.findAll(nameSpec, PageRequest.of(page.orElse(0),5));
     }
 
     @GetMapping(params = {"address"})
-    public Iterable<Customer> searchCustomerByAddress(@Spec(path = "address", params = "address",  spec = LikeIgnoreCase.class) Specification<Customer> addressSpec) {
-        return customerRepo.findAll(addressSpec);
+    public Iterable<Customer> searchCustomerByAddress(@RequestParam Optional<Integer> page,@Spec(path = "address", params = "address",  spec = LikeIgnoreCase.class) Specification<Customer> addressSpec) {
+        return customerRepo.findAll(addressSpec, PageRequest.of(page.orElse(0),5));
     }
 
     @GetMapping(params = {"phone"})
-    public Iterable<Customer> searchCustomerByPhone(@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Customer> phoneSpec) {
-        return customerRepo.findAll(phoneSpec);
+    public Page<Customer> searchCustomerByPhone(@RequestParam Optional<Integer> page, @Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Customer> phoneSpec) {
+        return customerRepo.findAll(phoneSpec, PageRequest.of(page.orElse(0),5));
     }
 
 }

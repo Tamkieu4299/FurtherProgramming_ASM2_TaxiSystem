@@ -57,7 +57,6 @@ public class DriverService {
         return null;
     }
 
-
     public List<Driver> getAllDrivers(){
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Driver.class);
         return criteria.list();
@@ -65,7 +64,7 @@ public class DriverService {
 
     public Driver getById(Long id){
         List<Driver> driversList = this.getAllDrivers();
-        for (int i=0;i<driversList.size();i+=1){
+        for(int i=0;i<driversList.size();i+=1){
             if (driversList.get(i).getId()==id){
                 return driversList.get(i);
             }

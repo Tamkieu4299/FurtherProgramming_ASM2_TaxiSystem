@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface DriverRepo extends PagingAndSortingRepository<Driver, Long>, JpaSpecificationExecutor<Driver> {
 
 //    List<Driver> findAll();
-
     Driver findDriverById(Long id);
 
 }
