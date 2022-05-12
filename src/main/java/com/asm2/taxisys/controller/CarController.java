@@ -3,6 +3,14 @@ package com.asm2.taxisys.controller;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 //    "make": "Audi",
@@ -12,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 //            "rating": 5.00,
 //            "licencePlate": "70H-123",
 //            "ratePerKm": 4.787
+
 @RestController
 @RequestMapping("/cars")
 public class CarController {
@@ -26,25 +35,28 @@ public class CarController {
         this.carRepo = carRepo;
     }
 
-//    @RequestMapping(path = "/addCar", method = RequestMethod.POST)
-//    public Car addCar(@RequestBody Car car){
-//        return carService.saveCar(car);
-//    }
-//
-//    @RequestMapping(path = "/deleteCar/{id}", method = RequestMethod.DELETE)
-//    public void deleteCar(@PathVariable Long id){
-//        try {
-//            carService.deleteCar(id);
-//            System.out.println("Deleted car with ID: "+id);
-//        } catch (Exception e) {
-//            System.out.println("Invalid car");
-//        }
-//    }
-//
-//    @RequestMapping(path = "/updateCar/{id}", method = RequestMethod.PUT)
-//    public Car updateCar(@PathVariable Long id, @RequestBody Car car){
-//        return carService.updateCar(car);
-//    }
+    @PostMapping( "/addCar")
+    public  Car addCar(@RequestBody Car car){
+        System.out.println("Hi");
+        return carService.saveCar(car);
+//        ResponseEntity<Car> a=returnCar;
+    }
+
+    @RequestMapping(path = "/deleteCar/{id}", method = RequestMethod.DELETE)
+    public void deleteCar(@PathVariable Long id){
+        try {
+            carService.deleteCar(id);
+            System.out.println("Deleted car with ID: "+id);
+        } catch (Exception e) {
+            System.out.println("Invalid car");
+        }
+    }
+
+    @RequestMapping(path = "/updateCar/{id}", method = RequestMethod.PUT)
+    public Car updateCar(@PathVariable Long id, @RequestBody Car car){
+        return carService.updateCar(car);
+    }
+
 
 //    @RequestMapping(path = "/allCars", method = RequestMethod.GET)
 //    Page<Car> getCars(@RequestParam Optional<Integer> page){
