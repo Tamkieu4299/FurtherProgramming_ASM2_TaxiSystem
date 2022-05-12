@@ -2,30 +2,37 @@ package com.asm2.taxisys.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
 import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -34,10 +41,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -120,17 +129,35 @@ class CarControllerTest {
                 .mapToObj(i -> new Car((long) i, "a"))
                 .collect(Collectors.toList());
 
-        Page<Car> page = new PageImpl<>(allTodos);
+        Page<Car> page = new PageImpl<Car>(allTodos);
 
         given(carRepo.findAll(PageRequest.of(0,5))).willReturn(page);
-        for (Car car:carRepo.findAll()){
+        for (Car car:carRepo.findAll(PageRequest.of(0,5))){
             System.out.println(car.getId()+car.getModel());
         }
-        mvc.perform(get("/cars/allCars?page=0").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/cars/allCars?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(5)));
+
+
+    public static String asJsonString(final Object obj){
+        try{
+            return new ObjectMapper().writeValueAsString(obj);
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
 //                .andExpect(jsonPath("$.data[0].id", is(1)));
 
+
+    @Test
+    void addCarTest() throws Exception{
+        Car car = new Car((long) 1, "a");
+        given(carService.saveCar(car)).willReturn(car);
+        mvc.perform(post("/cars/addCar").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test

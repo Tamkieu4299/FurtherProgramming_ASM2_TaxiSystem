@@ -30,7 +30,7 @@ public class InvoiceController {
     }
 
     @RequestMapping(path = "/addInvoice", method = RequestMethod.POST)
-    public long addInvoice(@RequestBody Invoice invoice){
+    public Invoice addInvoice(@RequestBody Invoice invoice){
         return invoiceService.saveInvoice(invoice);
     }
 

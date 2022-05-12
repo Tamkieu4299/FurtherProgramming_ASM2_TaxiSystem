@@ -33,22 +33,22 @@ public class InvoiceService {
         this.sessionFactory = sessionFactory;
     }
 
-    public long saveInvoice(Invoice invoice){
+    public Invoice saveInvoice(Invoice invoice){
         Long id = invoice.getId();
         List<Invoice> invoicesList = this.getAllInvoices();
         for(Invoice d: invoicesList){
             if(d.getId()==id) {
                 System.out.println("Existed invoice !");
-                return -1;
+                return null;
             }
         }
-        sessionFactory.getCurrentSession().save(invoice);
+        invoiceRepo.save(invoice);
         System.out.println("Created invoice with the ID: " + invoice.getId());
-        return invoice.getId();
+        return invoice;
     }
 
     public void deleteInvoice(Long id){
-        sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Invoice.class, id));
+        invoiceRepo.deleteById(id);
     }
 
     public long updateInvoice(Invoice invoice){
@@ -66,12 +66,11 @@ public class InvoiceService {
     }
 
     public List<Invoice> getAllInvoices(){
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Invoice.class);
-        return criteria.list();
+        return (List<Invoice>) invoiceRepo.findAll();
     }
 
     public Invoice getById(Long id){
-        return (Invoice) sessionFactory.getCurrentSession().get(Invoice.class, id);
+        return invoiceRepo.findInvoiceById(id);
     }
 
     public List<Invoice> getAllInvoicesBetween(Date start, Date end) throws ParseException {

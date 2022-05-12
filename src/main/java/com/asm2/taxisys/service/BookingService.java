@@ -44,13 +44,12 @@ public class BookingService {
     }
 
     public Booking saveBooking(Booking booking){
-
         bookingRepo.save(booking);
         return booking;
     }
 
     public void deleteBooking(Long id){
-        sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Booking.class, id));
+        bookingRepo.deleteById(id);
     }
 
     public Booking updateBooking(Booking booking){
@@ -67,8 +66,8 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookings(){
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Booking.class);
-        return criteria.list();
+//        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Booking.class);
+        return (List<Booking>) bookingRepo.findAll();
     }
 
     public Booking getById(Long id){

@@ -27,12 +27,12 @@ public class CustomerService {
 
     public Customer saveCustomer(Customer customer){
 
-        sessionFactory.getCurrentSession().save(customer);
+        customerRepo.save(customer);
         return customer;
     }
 
     public void deleteCustomer(Long id){
-        sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Customer.class, id));
+        customerRepo.deleteById(id);
     }
 
     public Customer updateCustomer(Customer customer){
@@ -47,8 +47,7 @@ public class CustomerService {
     }
 
     public List<Customer> getAllCustomers(){
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class);
-        return criteria.list();
+        return (List<Customer>) customerRepo.findAll();
     }
 
     public Customer getById(Long id){

@@ -41,7 +41,7 @@ public class DriverService {
     }
 
     public void deleteDriver(Long id){
-        sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Driver.class, id));
+        driverRepo.deleteById(id);
     }
 
     public Driver updateDriver(Driver driver){
@@ -56,8 +56,7 @@ public class DriverService {
     }
 
     public List<Driver> getAllDrivers(){
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Driver.class);
-        return criteria.list();
+        return (List<Driver>) driverRepo.findAll();
     }
 
     public Driver getById(Long id){
