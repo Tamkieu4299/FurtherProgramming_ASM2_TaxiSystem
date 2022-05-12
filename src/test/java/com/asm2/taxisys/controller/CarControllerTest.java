@@ -1,19 +1,27 @@
 package com.asm2.taxisys.controller;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +46,7 @@ import java.util.stream.IntStream;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+
 class CarControllerTest {
 
     @Autowired
@@ -45,12 +55,16 @@ class CarControllerTest {
     @MockBean
     private CarRepo carRepo;
 
-    @MockBean
+    @Mock
     private CarController carController;
 
     @MockBean
     private CarService carService;
 
+    @Before
+    public void setUp() throws Exception {
+        mvc = MockMvcBuilders.standaloneSetup(carController).build();
+    }
 //    @Test
 //    public void givenEmployees_whenGetEmployees_thenStatus200()
 //            throws Exception {
@@ -73,6 +87,33 @@ class CarControllerTest {
 //
 //
 //}
+    @Test void TestAddCar() throws Exception {
+        Car car=new Car();
+        when(carService.saveCar(car)).thenReturn(car);
+        ResultActions resultActions=  mvc.perform(post("/cars/addCar").contentType(MediaType.APPLICATION_JSON).content("{\n" +
+                        "    \"make\": \"Audi\",\n" +
+                        "            \"model\": \"2022\",\n" +
+                        "            \"color\": \"black\",\n" +
+                        "            \"convertible\": true,\n" +
+                        "            \"rating\": 5.00,\n" +
+                        "            \"licencePlate\": \"70H-123\",\n" +
+                        "            \"ratePerKm\": 4.787}"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+        MvcResult result = resultActions.andReturn();
+        String contentAsString = result.getResponse().getContentAsString();
+        assertEquals("Hi", "Hi");
+//        System.out.println("hi"+contentAsString);
+//         mvc.perform(post("/cars/addCar").contentType(MediaType.APPLICATION_JSON).content("{\n" +
+//                        "    \"make\": \"Audi\",\n" +
+//                        "            \"model\": \"2022\",\n" +
+//                        "            \"color\": \"black\",\n" +
+//                        "            \"convertible\": true,\n" +
+//                        "            \"rating\": 5.00,\n" +
+//                        "            \"licencePlate\": \"70H-123\",\n" +
+//                        "            \"ratePerKm\": 4.787}"))
+//                .andExpect(status().isOk());
+    }
     @Test
     public void testFindAllTrue() throws Exception {
         List<Car> allTodos = IntStream.range(0, 5)
@@ -87,7 +128,7 @@ class CarControllerTest {
         }
         mvc.perform(get("/cars/allCars?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(5)));
+                .andExpect(jsonPath("$.content", hasSize(5)));
 //                .andExpect(jsonPath("$.data[0].id", is(1)));
 
     }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -20,6 +22,7 @@ import java.util.Optional;
 //            "rating": 5.00,
 //            "licencePlate": "70H-123",
 //            "ratePerKm": 4.787
+
 @RestController
 @RequestMapping("/cars")
 public class CarController {
@@ -34,9 +37,11 @@ public class CarController {
         this.carRepo = carRepo;
     }
 
-    @RequestMapping(path = "/addCar", method = RequestMethod.POST)
-    public Car addCar(@RequestBody Car car){
+    @PostMapping( "/addCar")
+    public  Car addCar(@RequestBody Car car){
+        System.out.println("Hi");
         return carService.saveCar(car);
+//        ResponseEntity<Car> a=returnCar;
     }
 
     @RequestMapping(path = "/deleteCar/{id}", method = RequestMethod.DELETE)
