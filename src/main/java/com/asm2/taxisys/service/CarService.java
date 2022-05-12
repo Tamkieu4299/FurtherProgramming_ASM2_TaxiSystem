@@ -8,9 +8,6 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +37,7 @@ public class CarService {
     }
 
     public void deleteCar(Long id){
-        sessionFactory.getCurrentSession().delete(sessionFactory.getCurrentSession().get(Car.class, id));
+        carRepo.deleteById(id);
     }
 
     public Car updateCar(Car car){
@@ -56,8 +53,7 @@ public class CarService {
     }
 
     public List<Car> getAllCars(){
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Car.class);
-        return criteria.list();
+        return (List<Car>) carRepo.findAll();
     }
 
     public Car getById(Long id){

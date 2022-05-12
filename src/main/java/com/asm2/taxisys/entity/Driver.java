@@ -41,9 +41,6 @@ public class Driver implements Serializable {
     private ZonedDateTime date;
 
     public Driver() {};
-//    public Driver copy(){
-//        return new Driver(this.id,this.licenseNumber,this.phone,this.rating,this.car,this.invoices,this.date);
-//    }
 
     public Long getId() {
         return id;
