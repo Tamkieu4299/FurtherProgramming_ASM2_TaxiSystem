@@ -58,6 +58,19 @@ public class Car{
     @CreationTimestamp
     private ZonedDateTime time;
     public Car(){};
+
+    public Car(Long id, String vin, String make, String model, String color, Boolean convertible, Double rating, String licencePlate, Double ratePerKm) {
+        this.id = id;
+        this.vin = vin;
+        this.make = make;
+        this.model = model;
+        this.color = color;
+        this.convertible = convertible;
+        this.rating = rating;
+        this.licencePlate = licencePlate;
+        this.ratePerKm = ratePerKm;
+    }
+
     public Car(Long id, String model){
         this.id=id;
         this.model=model;

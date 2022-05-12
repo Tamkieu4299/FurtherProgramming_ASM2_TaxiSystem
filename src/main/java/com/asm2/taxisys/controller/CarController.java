@@ -1,7 +1,10 @@
 package com.asm2.taxisys.controller;
 
+import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.service.CarService;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -12,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 //    "make": "Audi",
 //            "model": "2022",
@@ -36,7 +41,7 @@ public class CarController {
     }
 
     @PostMapping( "/addCar")
-    public  Car addCar(@RequestBody Car car){
+    public Car addCar(@RequestBody Car car){
         System.out.println("Hi");
         return carService.saveCar(car);
 //        ResponseEntity<Car> a=returnCar;
