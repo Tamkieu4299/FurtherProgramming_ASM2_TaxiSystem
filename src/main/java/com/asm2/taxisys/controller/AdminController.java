@@ -126,44 +126,82 @@ public class AdminController {
         return carService.getById(id);
     }
 
-    @GetMapping(params = {"vin"})
-    public Page<Car> adminSearchCarByVIN(@RequestParam Optional<Integer> page, @Spec(path = "vin", params = "vin", spec = LikeIgnoreCase.class) Specification<Car> vinSpec) {
-        return carRepo.findAll(vinSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"vin"})
+//    public Page<Car> adminSearchCarByVIN(@RequestParam Optional<Integer> page, @Spec(path = "vin", params = "vin", spec = LikeIgnoreCase.class) Specification<Car> vinSpec) {
+//        return carRepo.findAll(vinSpec, PageRequest.of(page.orElse(0),5));
+//    }
+    @GetMapping(path = "cars/query/vin")
+    public Page<Car> adminSearchCarsByVin(@RequestParam String vin, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByVin(vin, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"make"})
-    public Page<Car> adminSearchCarByMake(@RequestParam Optional<Integer> page, @Spec(path = "make", params = "make", spec = LikeIgnoreCase.class) Specification<Car> makeSpec) {
-        return carRepo.findAll(makeSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"make"})
+//    public Page<Car> adminSearchCarByMake(@RequestParam Optional<Integer> page, @Spec(path = "make", params = "make", spec = LikeIgnoreCase.class) Specification<Car> makeSpec) {
+//        return carRepo.findAll(makeSpec, PageRequest.of(page.orElse(0),5));
+//    }
+    @GetMapping(path = "cars/query/make")
+    public Page<Car> adminSearchCarsByMake(@RequestParam String make, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByMake(make, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"model"})
-    public Page<Car> adminSearchCarByModel(@RequestParam Optional<Integer> page, @Spec(path = "model", params = "model", spec = LikeIgnoreCase.class) Specification<Car> modelSpec) {
-        return carRepo.findAll(modelSpec,PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"model"})
+//    public Page<Car> adminSearchCarByModel(@RequestParam Optional<Integer> page, @Spec(path = "model", params = "model", spec = LikeIgnoreCase.class) Specification<Car> modelSpec) {
+//        return carRepo.findAll(modelSpec,PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "cars/query/model")
+    public Page<Car> adminSearchCarsByModel(@RequestParam String model, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByModel(model, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"color"})
-    public Page<Car> adminSearchCarByColor(@RequestParam Optional<Integer> page, @Spec(path = "color", params = "color", spec = LikeIgnoreCase.class) Specification<Car> colorSpec) {
-        return carRepo.findAll(colorSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"color"})
+//    public Page<Car> adminSearchCarByColor(@RequestParam Optional<Integer> page, @Spec(path = "color", params = "color", spec = LikeIgnoreCase.class) Specification<Car> colorSpec) {
+//        return carRepo.findAll(colorSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "cars/query/color")
+    public Page<Car> adminSearchCarsByColor(@RequestParam String color, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByColor(color, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"convertible"})
-    public Page<Car> adminSearchCarByConvertible(@RequestParam Optional<Integer> page, @Spec(path = "convertible", params = "convertible", spec = LikeIgnoreCase.class) Specification<Car> convertibleSpec) {
-        return carRepo.findAll(convertibleSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"convertible"})
+//    public Page<Car> adminSearchCarByConvertible(@RequestParam Optional<Integer> page, @Spec(path = "convertible", params = "convertible", spec = LikeIgnoreCase.class) Specification<Car> convertibleSpec) {
+//        return carRepo.findAll(convertibleSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "cars/query/convertible")
+    public Page<Car> adminSearchCarsByConvertible(@RequestParam boolean convertible, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByConvertible(convertible, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"rating"})
-    public Page<Car> adminSearchCarByRating(@RequestParam Optional<Integer> page, @Spec(path = "rating", params = "rating", spec = LikeIgnoreCase.class) Specification<Car> ratingSpec) {
-        return carRepo.findAll(ratingSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"rating"})
+//    public Page<Car> adminSearchCarByRating(@RequestParam Optional<Integer> page, @Spec(path = "rating", params = "rating", spec = LikeIgnoreCase.class) Specification<Car> ratingSpec) {
+//        return carRepo.findAll(ratingSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "cars/query/rating")
+    public Page<Car> adminSearchCarsByRating(@RequestParam double rating, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByRating(rating, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"licencePlate"})
-    public Page<Car> adminSearchCarByLicencePlate(@RequestParam Optional<Integer> page, @Spec(path = "licencePlate", params = "licencePlate", spec = LikeIgnoreCase.class) Specification<Car> licencePlateSpec) {
-        return carRepo.findAll(licencePlateSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"licencePlate"})
+//    public Page<Car> adminSearchCarByLicencePlate(@RequestParam Optional<Integer> page, @Spec(path = "licencePlate", params = "licencePlate", spec = LikeIgnoreCase.class) Specification<Car> licencePlateSpec) {
+//        return carRepo.findAll(licencePlateSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "cars/query/licensePlate")
+    public Page<Car> adminSearchCarsByLicensePlate(@RequestParam String licensePlate, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByLicensePlate(licensePlate, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"ratePerKm"})
-    public Page<Car> adminSearchCarByRatePerKm(@RequestParam Optional<Integer> page, @Spec(path = "ratePerKm", params = "ratePerKm", spec = LikeIgnoreCase.class) Specification<Car> ratePerKmSpec) {
-        return carRepo.findAll(ratePerKmSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"ratePerKm"})
+//    public Page<Car> adminSearchCarByRatePerKm(@RequestParam Optional<Integer> page, @Spec(path = "ratePerKm", params = "ratePerKm", spec = LikeIgnoreCase.class) Specification<Car> ratePerKmSpec) {
+//        return carRepo.findAll(ratePerKmSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "cars/query/rateperkm")
+    public Page<Car> adminSearchCarsByRatePerKm(@RequestParam double ratePerKm, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByRatePerKm(ratePerKm, PageRequest.of(page.orElse(0),5));
     }
 
     /* Revenue */

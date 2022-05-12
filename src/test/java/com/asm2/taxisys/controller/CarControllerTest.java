@@ -102,8 +102,6 @@ class CarControllerTest {
                 return criteriaBuilder.like(root.get("model"), "%"+model+"%");
             }
         };
-
-
     }
     @Test
     void TestAddCar() throws Exception {
@@ -168,12 +166,12 @@ class CarControllerTest {
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
 
-        given(carRepo.findAll(PageRequest.of(0,5))).willReturn(page);
-
-        for (Car car:carRepo.findAll()){
-            System.out.println(car.getId()+car.getModel());
-        }
-        mvc.perform(get("/admin?model=2022&page=0").contentType(MediaType.APPLICATION_JSON))
+//        given(carRepo.findAll(nameLike("2022"),PageRequest.of(0, 5))).willReturn(page);
+        given(carRepo.findCarsByModel("2022",PageRequest.of(0, 5))).willReturn(page);
+//        for (Car car:carRepo.findAll(nameLike("2022"),PageRequest.of(0, 5))){
+//            System.out.println(car.getId()+car.getModel());
+//        }
+        mvc.perform(get("/admin/cars/query/model?model=2022&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(5)));
 

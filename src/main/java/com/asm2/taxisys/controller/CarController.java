@@ -62,7 +62,6 @@ public class CarController {
         return carService.updateCar(car);
     }
 
-
 //    @RequestMapping(path = "/allCars", method = RequestMethod.GET)
 //    Page<Car> getCars(@RequestParam Optional<Integer> page){
 //        return carRepo.findAll(PageRequest.of(page.orElse(0),5));
