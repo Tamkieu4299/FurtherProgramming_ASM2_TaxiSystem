@@ -6,8 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
-
 public interface CarRepo extends PagingAndSortingRepository<Car, Long>, JpaSpecificationExecutor<Car> {
 
     Car findCarById(Long id);
@@ -18,6 +16,7 @@ public interface CarRepo extends PagingAndSortingRepository<Car, Long>, JpaSpeci
     Page<Car> findCarsByColor(String color, Pageable pageable);
     Page<Car> findCarsByConvertible(boolean convertible, Pageable pageable);
     Page<Car> findCarsByRating(double rating, Pageable pageable);
-    Page<Car> findCarsByLicensePlate(String licensePlate, Pageable pageable);
+    Page<Car> findCarsByLicencePlate(String licencePlate, Pageable pageable);
     Page<Car> findCarsByRatePerKm(double ratePerKm, Pageable pageable);
+
 }

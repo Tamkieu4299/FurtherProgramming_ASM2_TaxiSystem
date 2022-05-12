@@ -111,9 +111,19 @@ public class AdminController {
         }
     }
 
+//    @RequestMapping(path = "/cars/updateCar/{id}", method = RequestMethod.PUT)
+//    public Car adminUpdateCar(@PathVariable Long id, @RequestBody Car car){
+//        return carService.updateCar(car);
+//    }
+
     @RequestMapping(path = "/cars/updateCar/{id}", method = RequestMethod.PUT)
-    public Car adminUpdateCar(@PathVariable Long id, @RequestBody Car car){
-        return carService.updateCar(car);
+    public void adminUpdateCar(@PathVariable Long id, @RequestBody Car car){
+        try {
+            carService.updateCar(car);
+            System.out.println("Updated car with ID: "+id);
+        } catch (Exception e) {
+            System.out.println("Invalid car");
+        }
     }
 
     @RequestMapping(path = "/cars/allCars", method = RequestMethod.GET)
@@ -189,9 +199,9 @@ public class AdminController {
 //        return carRepo.findAll(licencePlateSpec, PageRequest.of(page.orElse(0),5));
 //    }
 
-    @GetMapping(path = "cars/query/licensePlate")
-    public Page<Car> adminSearchCarsByLicensePlate(@RequestParam String licensePlate, @RequestParam Optional<Integer> page){
-        return carRepo.findCarsByLicensePlate(licensePlate, PageRequest.of(page.orElse(0),5));
+    @GetMapping(path = "cars/query/licencePlate")
+    public Page<Car> adminSearchCarsByLicencePlate(@RequestParam String licencePlate, @RequestParam Optional<Integer> page){
+        return carRepo.findCarsByLicencePlate(licencePlate, PageRequest.of(page.orElse(0),5));
     }
 
 //    @GetMapping(params = {"ratePerKm"})
@@ -199,7 +209,7 @@ public class AdminController {
 //        return carRepo.findAll(ratePerKmSpec, PageRequest.of(page.orElse(0),5));
 //    }
 
-    @GetMapping(path = "cars/query/rateperkm")
+    @GetMapping(path = "cars/query/ratePerKm")
     public Page<Car> adminSearchCarsByRatePerKm(@RequestParam double ratePerKm, @RequestParam Optional<Integer> page){
         return carRepo.findCarsByRatePerKm(ratePerKm, PageRequest.of(page.orElse(0),5));
     }
