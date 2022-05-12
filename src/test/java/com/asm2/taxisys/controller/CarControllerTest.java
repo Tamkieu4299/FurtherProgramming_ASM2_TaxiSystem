@@ -38,13 +38,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -93,16 +89,7 @@ class CarControllerTest {
 //
 //
 //}
-    private Specification<Car> nameLike(String model){
-        return new Specification<Car>() {
-            @Override
-            public Predicate toPredicate(Root<Car> root,
-                                         CriteriaQuery<?> query,
-                                         CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.like(root.get("model"), "%"+model+"%");
-            }
-        };
-    }
+
     @Test
     void TestAddCar() throws Exception {
         Car car = new Car();
@@ -165,28 +152,19 @@ class CarControllerTest {
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
-
-//        given(carRepo.findAll(nameLike("2022"),PageRequest.of(0, 5))).willReturn(page);
         given(carRepo.findCarsByModel("2022",PageRequest.of(0, 5))).willReturn(page);
-//        for (Car car:carRepo.findAll(nameLike("2022"),PageRequest.of(0, 5))){
-//            System.out.println(car.getId()+car.getModel());
-//        }
         mvc.perform(get("/admin/cars/query/model?model=2022&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(5)));
-
     }
 
-        public static String asJsonString ( final Object obj){
-            try {
-                return new ObjectMapper().writeValueAsString(obj);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+    public static String asJsonString ( final Object obj){
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-
-
+    }
 
     @Test
     void addCarTest() throws Exception {
@@ -195,8 +173,6 @@ class CarControllerTest {
         mvc.perform(post("/cars/addCar").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
-
 
     @Test
     void deleteCar() throws Exception{
@@ -214,24 +190,55 @@ class CarControllerTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
-    void updateCar() {
+    void updateCarTest() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+
+        Page<Car> page = new PageImpl<Car>(allTodos);
+
+        given(carRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
+        for (Car car : carRepo.findAll(PageRequest.of(0, 5))) {
+            System.out.println(car.getId() + car.getModel());
+        }
+        mvc.perform(MockMvcRequestBuilders.put("/admin/cars/updateCar/1").content(asJsonString(new Car(1L,"2023"))).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getAllCars() {
+    void searchCarByRating() throws Exception{
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByRating(4.787,PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/rating?rating=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(5)));
     }
 
     @Test
-    void searchCarByRating() {
+    void searchCarByLicencePlate() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByLicencePlate("70H-123",PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/licencePlate?licencePlate=70H-123&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(5)));
     }
 
     @Test
-    void searchCarByLicencePlate() {
-    }
-
-    @Test
-    void searchCarByRatePerKm() {
+    void searchCarByRatePerKm() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByRatePerKm(4.787,PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/ratePerKm?ratePerKm=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(5)));
     }
 }
