@@ -136,6 +136,10 @@ public class AdminController {
         return carService.getById(id);
     }
 
+    @GetMapping(path = "cars/query/id")
+    public Car adminSearchCarById(@RequestParam long id){
+        return carRepo.findCarById(id);
+    }
 //    @GetMapping(params = {"vin"})
 //    public Page<Car> adminSearchCarByVIN(@RequestParam Optional<Integer> page, @Spec(path = "vin", params = "vin", spec = LikeIgnoreCase.class) Specification<Car> vinSpec) {
 //        return carRepo.findAll(vinSpec, PageRequest.of(page.orElse(0),5));

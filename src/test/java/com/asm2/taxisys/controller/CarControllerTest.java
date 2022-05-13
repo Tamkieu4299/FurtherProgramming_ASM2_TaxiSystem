@@ -139,11 +139,11 @@ class CarControllerTest {
     @Test
     public void getCarbyID() throws Exception {
         Car car = new Car((long) 1, "a");
-        given(carService.saveCar(car)).willReturn(car);
+        given(carRepo.findCarById(1L)).willReturn(car);
 
-        mvc.perform(get("/admin/cars/getCar/1").contentType(MediaType.APPLICATION_JSON_VALUE))
+        mvc.perform(get("/admin/cars/query/id?id=1").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$",hasSize(1)));
+                .andExpect(jsonPath("$.id",is(1)));
     }
 
     @Test
@@ -155,7 +155,7 @@ class CarControllerTest {
         given(carRepo.findCarsByModel("2022",PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(get("/admin/cars/query/model?model=2022&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(5)));
+                .andExpect(jsonPath("$", hasSize(5)));
     }
 
     public static String asJsonString ( final Object obj){
