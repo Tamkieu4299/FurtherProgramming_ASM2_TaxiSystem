@@ -60,7 +60,7 @@ public class DriverController {
         }
     }
 
-    @RequestMapping(path = "/updateDriver/{id}", method = RequestMethod.POST)
+    @RequestMapping(path = "/updateDriver/{id}", method = RequestMethod.PUT)
     public Driver updateDriver(@PathVariable Long id,@RequestBody Driver updatedDriver){
         return driverService.updateDriver(updatedDriver);
     }
@@ -70,28 +70,48 @@ public class DriverController {
         return driverRepo.findAll(PageRequest.of(page.orElse(0),5));
     }
 
-    @RequestMapping(path = "/getDriver/{id}")
-    public Driver getById(@PathVariable Long id){
-        return driverService.getById(id);
+//    @RequestMapping(path = "/getDriver/{id}")
+//    public Driver getById(@PathVariable Long id){
+//        return driverService.getById(id);
+//    }
+
+    @GetMapping(path = "/query/id")
+    public Driver getById(@RequestParam long id){
+        return driverRepo.findDriverById(id);
     }
 
-    @GetMapping(params = {"licenseNumber"})
-    Page<Driver> searchDriverByLicense(@RequestParam Optional<Integer> page, @Spec(path = "licenseNumber", params = "licenseNumber", spec = LikeIgnoreCase.class) Specification<Driver> licenseSpec){
-        return driverRepo.findAll(licenseSpec,PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"licenseNumber"})
+//    Page<Driver> searchDriverByLicense(@RequestParam Optional<Integer> page, @Spec(path = "licenseNumber", params = "licenseNumber", spec = LikeIgnoreCase.class) Specification<Driver> licenseSpec){
+//        return driverRepo.findAll(licenseSpec,PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "query/licenseNumber")
+    public Page<Driver> searchDriverByLicense(@RequestParam String licenseNumber, @RequestParam Optional<Integer> page){
+        return driverRepo.findDriversByLicenseNumber(licenseNumber, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"rating"})
-    public Page<Driver> searchDriverByRating(@RequestParam Optional<Integer> page, @Spec(path = "rating", params = "rating",  spec = LikeIgnoreCase.class) Specification<Driver> ratingSpec) {
-        return driverRepo.findAll(ratingSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"rating"})
+//    public Page<Driver> searchDriverByRating(@RequestParam Optional<Integer> page, @Spec(path = "rating", params = "rating",  spec = LikeIgnoreCase.class) Specification<Driver> ratingSpec) {
+//        return driverRepo.findAll(ratingSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "query/rating")
+    public Page<Driver> searchDriverByRating(@RequestParam double rating, @RequestParam Optional<Integer> page){
+        return driverRepo.findDriversByRating(rating, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"phone"})
-    public Page<Driver> searchDriverByPhone(@RequestParam Optional<Integer> page,@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Driver> phoneSpec) {
-        return driverRepo.findAll(phoneSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"phone"})
+//    public Page<Driver> searchDriverByPhone(@RequestParam Optional<Integer> page,@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Driver> phoneSpec) {
+//        return driverRepo.findAll(phoneSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "query/phone")
+    public Page<Driver> searchDriverByPhone(@RequestParam String phone, @RequestParam Optional<Integer> page){
+        return driverRepo.findDriversByPhone(phone, PageRequest.of(page.orElse(0),5));
     }
 
     @PostMapping(path = "/select-car/{id}")
-    public void selectCar(@RequestParam("carId") Long carId, @PathVariable("id") Long id){
+    public Car selectCar(@RequestParam("carId") Long carId, @PathVariable("id") Long id){
         if(carService.getById(carId).getDriver()==null) {
             Car car = carService.getById(carId);
             Driver driver = driverService.getById(id);
@@ -99,9 +119,10 @@ public class DriverController {
             car.setDriver(driver);
             carService.updateCar(car);
             driverService.updateDriver(driver);
-            return;
+            return car;
         }
-        System.out.println("This car has been choosen !");
+        System.out.println("This car has been chosen !");
+        return null;
     }
 }
 

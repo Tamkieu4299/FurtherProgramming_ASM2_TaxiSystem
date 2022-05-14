@@ -75,6 +75,7 @@ public class Car{
         this.id=id;
         this.model=model;
     }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

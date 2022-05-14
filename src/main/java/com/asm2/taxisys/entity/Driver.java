@@ -42,6 +42,17 @@ public class Driver implements Serializable {
 
     public Driver() {};
 
+    public Driver(Long id){
+        this.id=id;
+    }
+
+    public Driver(Long id, String licenseNumber, String phone, double rating){
+        this.id=id;
+        this.licenseNumber=licenseNumber;
+        this.phone=phone;
+        this.rating=rating;
+    }
+
     public Long getId() {
         return id;
     }
