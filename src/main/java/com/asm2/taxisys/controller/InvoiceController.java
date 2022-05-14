@@ -1,5 +1,6 @@
 package com.asm2.taxisys.controller;
 
+import com.asm2.taxisys.entity.Driver;
 import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.repo.InvoiceRepo;
 import com.asm2.taxisys.service.InvoiceService;
@@ -43,9 +44,14 @@ public class InvoiceController {
         }
     }
 
-    @RequestMapping(path = "/updateInvoice", method = RequestMethod.PUT)
-    public long updateInvoice(@RequestBody Invoice invoice){
-        return invoiceService.updateInvoice(invoice);
+//    @RequestMapping(path = "/updateInvoice", method = RequestMethod.PUT)
+//    public long updateInvoice(@RequestBody Invoice invoice){
+//        return invoiceService.updateInvoice(invoice);
+//    }
+
+    @RequestMapping(path = "/updateInvoice/{id}", method = RequestMethod.PUT)
+    public Invoice updateInvoice(@PathVariable Long id, @RequestBody Invoice updatedInvoice){
+        return invoiceService.updateInvoice(updatedInvoice);
     }
 
     @RequestMapping(path = "/allInvoices", method = RequestMethod.GET)
