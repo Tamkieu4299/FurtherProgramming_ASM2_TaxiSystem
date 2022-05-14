@@ -32,6 +32,7 @@ import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -78,7 +79,7 @@ public class InvoiceControllerTest {
         Invoice invoice = new Invoice((long) 1);
         given(invoiceService.saveInvoice(invoice)).willReturn(invoice);
         mvc.perform(post("/invoices/addInvoicec").content(asJsonString(invoice)).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
 //                .andExpect(jsonPath("$.id", is(1L)));
     }
 
@@ -101,7 +102,7 @@ public class InvoiceControllerTest {
         Page<Invoice> page = new PageImpl<Invoice>(allTodos);
         given(invoiceRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(delete("/invoices/deleteInvoicec/1").contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -123,7 +124,7 @@ public class InvoiceControllerTest {
         Page<Invoice> page = new PageImpl<Invoice>(allTodos);
         given(invoiceRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(MockMvcRequestBuilders.put("/invoices/updateInvocice/1").content(asJsonString(new Invoice(1L))).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -145,9 +146,8 @@ public class InvoiceControllerTest {
                 .collect(Collectors.toList());
         Page<Invoice> page = new PageImpl<Invoice>(allTodos);
         given(invoiceRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/invoices/allInvoices?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+        mvc.perform(get("/invoices/allInvoice?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -167,9 +167,10 @@ public class InvoiceControllerTest {
 
         given(invoiceRepo.findInvoiceById(1L)).willReturn(invoice);
 
-        mvc.perform(get("/invoices/query/id?id=1").contentType(MediaType.APPLICATION_JSON_VALUE))
+        String result=mvc.perform(get("/invoices/query/id?id=2").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id",is(0)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
 //    public void getAllInvoicesBetween() throws Exception{
