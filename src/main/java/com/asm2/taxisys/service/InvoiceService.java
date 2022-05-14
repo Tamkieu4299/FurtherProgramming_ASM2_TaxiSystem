@@ -45,17 +45,17 @@ public class InvoiceService {
         invoiceRepo.deleteById(id);
     }
 
-    public long updateInvoice(Invoice invoice){
+    public Invoice updateInvoice(Invoice invoice){
         List<Invoice> invoicesList = this.getAllInvoices();
         for (Invoice i : invoicesList){
             if (i.getId()==invoice.getId()){
                 invoiceRepo.save(invoice);
                 System.out.println("Updated invoice with the ID: " + invoice.getId());
-                return invoice.getId();
+                return invoice;
             }
         }
         System.out.println("can not update Invoice ");
-        return -1;
+        return null;
 
     }
 

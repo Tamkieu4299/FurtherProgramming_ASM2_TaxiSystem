@@ -29,6 +29,10 @@ public class Invoice {
 
     public Invoice() {}
 
+    public Invoice(Long id){
+        this.id=id;
+    }
+
     public Invoice(Customer customerId, Driver driver){
         this.customer=customerId;
         this.driver=driver;
