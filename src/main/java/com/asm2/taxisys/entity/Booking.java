@@ -37,6 +37,18 @@ public class Booking {
 
     public Booking() {}
 
+    public Booking(Long id){
+        this.id=id;
+    }
+
+    public Booking(Long id, String startLocation, String endLocation, String pickTime, String dropTime, Long tripDistance){
+        this.id=id;
+        this.startLocation=startLocation;
+        this.endLocation=endLocation;
+        this.pickTime=pickTime;
+        this.dropTime=dropTime;
+        this.tripDistance=tripDistance;
+    };
     public Booking(String pickTime, String dropTime, Invoice invoice){
         this.pickTime = pickTime;
         this.dropTime = dropTime;

@@ -41,6 +41,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -57,38 +58,10 @@ class CarControllerTest {
     private CarRepo carRepo;
 
     @Mock
-    private CarController carController;
+    private AdminController adminController;
 
     @MockBean
     private CarService carService;
-
-//    @Before
-//    public void setUp() throws Exception {
-//        mvc = MockMvcBuilders.standaloneSetup(carController).build();
-//    }
-
-    //    @Test
-//    public void givenEmployees_whenGetEmployees_thenStatus200()
-//            throws Exception {
-//
-//        createTestEmployee("bob");
-//
-//        mvc.perform(get("/api/employees")
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(content()
-//                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$[0].name", is("bob")));
-//    }
-//@Before
-//public void setUp() {
-//    Mockito.when(carRepo.findAll())
-//            .thenReturn((Iterable<Car>) IntStream.range(0, 10)
-//                    .mapToObj(i -> new Car((long) i, "a"))
-//                    .collect(Collectors.toList()));
-//
-//
-//}
 
     @Test
     void TestAddCar() throws Exception {
@@ -147,6 +120,16 @@ class CarControllerTest {
     }
 
     @Test
+    public void getCarbyIDFalse() throws Exception {
+        Car car = new Car((long) 1, "a");
+        given(carRepo.findCarById(1L)).willReturn(car);
+
+        mvc.perform(get("/admin/cars/query/id?id=1").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id",is(2)));
+    }
+
+    @Test
     void searchCarByModel() throws Exception{
         List<Car> allTodos = IntStream.range(0, 5)
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
@@ -154,6 +137,18 @@ class CarControllerTest {
         Page<Car> page = new PageImpl<>(allTodos);
         given(carRepo.findCarsByModel("2022",PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(get("/admin/cars/query/model?model=2022&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    @Test
+    void searchCarByModelFalse() throws Exception{
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByModel("2022",PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/model?model=2023&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)));
     }
@@ -170,8 +165,18 @@ class CarControllerTest {
     void addCarTest() throws Exception {
         Car car = new Car((long) 1, "a");
         given(carService.saveCar(car)).willReturn(car);
-        mvc.perform(post("/cars/addCar").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(post("admin/cars/addCar").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void addCarTestFalse() throws Exception {
+        Car car = new Car((long) 1, "a");
+        given(carService.saveCar(car)).willReturn(car);
+        mvc.perform(post("admin/cars/addCarr").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
     }
 
     @Test
@@ -187,6 +192,22 @@ class CarControllerTest {
             System.out.println(car.getId() + car.getModel());
         }
         mvc.perform(delete("/admin/cars/deleteCar/1").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteCarFalse() throws Exception{
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+
+        Page<Car> page = new PageImpl<Car>(allTodos);
+
+        given(carRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
+        for (Car car : carRepo.findAll(PageRequest.of(0, 5))) {
+            System.out.println(car.getId() + car.getModel());
+        }
+        mvc.perform(delete("/admin/cars/deleteCarr/1").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
 
@@ -207,6 +228,22 @@ class CarControllerTest {
     }
 
     @Test
+    void updateCarTestFalse() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+
+        Page<Car> page = new PageImpl<Car>(allTodos);
+
+        given(carRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
+        for (Car car : carRepo.findAll(PageRequest.of(0, 5))) {
+            System.out.println(car.getId() + car.getModel());
+        }
+        mvc.perform(MockMvcRequestBuilders.put("/admin/cars/updateCarr/1").content(asJsonString(new Car(1L,"2023"))).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void searchCarByRating() throws Exception{
         List<Car> allTodos = IntStream.range(0, 5)
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
@@ -216,6 +253,18 @@ class CarControllerTest {
         mvc.perform(get("/admin/cars/query/rating?rating=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(5)));
+    }
+
+    @Test
+    void searchCarByRatingFalse() throws Exception{
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByRating(4.787,PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/rating?rating=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
     }
 
     @Test
@@ -231,6 +280,18 @@ class CarControllerTest {
     }
 
     @Test
+    void searchCarByLicencePlateFalse() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByLicencePlate("70H-123",PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/licencePlate?licencePlate=70H-123&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
+    }
+
+    @Test
     void searchCarByRatePerKm() throws Exception {
         List<Car> allTodos = IntStream.range(0, 5)
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
@@ -240,5 +301,64 @@ class CarControllerTest {
         mvc.perform(get("/admin/cars/query/ratePerKm?ratePerKm=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(5)));
+    }
+    @Test
+    void searchCarByRatePerKmFalse() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByRatePerKm(4.787,PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/ratePerKm?ratePerKm=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
+    }
+
+    @Test
+    void searchCarByColor() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByColor("black",PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/color?color=black&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(5)));
+    }
+
+    @Test
+    void searchCarByColorFalse() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByColor("black",PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/color?color=black&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
+    }
+
+    @Test
+    void searchCarByConvertible() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByConvertible(true,PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/convertible?convertible=true&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(5)));
+    }
+
+    @Test
+    void searchCarByConvertibleFalse() throws Exception {
+        List<Car> allTodos = IntStream.range(0, 5)
+                .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
+                .collect(Collectors.toList());
+        Page<Car> page = new PageImpl<>(allTodos);
+        given(carRepo.findCarsByConvertible(true,PageRequest.of(0, 5))).willReturn(page);
+        mvc.perform(get("/admin/cars/query/convertible?convertible=true&page=0").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
     }
 }

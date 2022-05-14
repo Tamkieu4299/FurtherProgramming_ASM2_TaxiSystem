@@ -55,44 +55,88 @@ public class AdminController {
             System.out.println("Invalid booking");
         }
     }
-    @RequestMapping(path = "/bookings/updateBooking", method = RequestMethod.PUT)
-    public Booking adminUpdateBooking(@RequestBody Booking booking){
-        return bookingService.updateBooking(booking);
+//    @RequestMapping(path = "/bookings/updateBooking", method = RequestMethod.PUT)
+//    public Booking adminUpdateBooking(@RequestBody Booking booking){
+//        return bookingService.updateBooking(booking);
+//    }
+
+    @RequestMapping(path = "/bookings/updateBooking/{id}", method = RequestMethod.PUT)
+    public void adminUpdateBooking(@PathVariable Long id, @RequestBody Booking booking){
+        try {
+            bookingService.updateBooking(booking);
+            System.out.println("Updated booking with ID: "+id);
+        } catch (Exception e) {
+            System.out.println("Invalid booking");
+        }
     }
+
+//    @RequestMapping(path = "/bookings/allBookings", method = RequestMethod.GET)
+//    public List<Booking> adminGetAllBookings(){
+//        return bookingService.getAllBookings();
+//    }
 
     @RequestMapping(path = "/bookings/allBookings", method = RequestMethod.GET)
-    public List<Booking> adminGetAllBookings(){
-        return bookingService.getAllBookings();
+    Page<Booking> adminGetBookings(@RequestParam Optional<Integer> page){
+        return bookingRepo.findAll(PageRequest.of(page.orElse(0),5));
     }
 
-    @RequestMapping(path = "/bookings/getBooking/{id}")
-    public Booking adminGetBookingById(@PathVariable Long id){
-        return bookingService.getById(id);
+//    @RequestMapping(path = "/bookings/getBooking/{id}")
+//    public Booking adminGetBookingById(@PathVariable Long id){
+//        return bookingService.getById(id);
+//    }
+    @GetMapping(path = "bookings/query/id")
+    public Booking adminSearchBookingById(@RequestParam long id){
+        return bookingRepo.findBookingById(id);
     }
 
-    @GetMapping(params = {"startLocation"})
-    public Iterable<Booking> adminSearchBookingByStartLocation(@Spec(path = "startLocation", params = "startLocation", spec = LikeIgnoreCase.class) Specification<Booking> startLocationSpec) {
-        return bookingRepo.findAll(startLocationSpec);
+//    @GetMapping(params = {"startLocation"})
+//    public Iterable<Booking> adminSearchBookingByStartLocation(@Spec(path = "startLocation", params = "startLocation", spec = LikeIgnoreCase.class) Specification<Booking> startLocationSpec) {
+//        return bookingRepo.findAll(startLocationSpec);
+//    }
+
+    @GetMapping(path = "bookings/query/startLocation")
+    public Page<Booking> adminSearchBookingByStartLocation(@RequestParam String startLocation, @RequestParam Optional<Integer> page){
+        return bookingRepo.findBookingsByStartLocation(startLocation, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"endLocation"})
-    public Iterable<Booking> adminSearchBookingByEndLocation(@Spec(path = "endLocation", params = "endLocation", spec = LikeIgnoreCase.class) Specification<Booking> endLocationSpec) {
-        return bookingRepo.findAll(endLocationSpec);
+//    @GetMapping(params = {"endLocation"})
+//    public Iterable<Booking> adminSearchBookingByEndLocation(@Spec(path = "endLocation", params = "endLocation", spec = LikeIgnoreCase.class) Specification<Booking> endLocationSpec) {
+//        return bookingRepo.findAll(endLocationSpec);
+//    }
+
+    @GetMapping(path = "bookings/query/endLocation")
+    public Page<Booking> adminSearchBookingByEndLocation(@RequestParam String endLocation, @RequestParam Optional<Integer> page){
+        return bookingRepo.findBookingsByEndLocation(endLocation, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"pickTime"})
-    public Iterable<Booking> adminSearchBookingByPickTime(@Spec(path = "pickTime", params = "pickTime", spec = LikeIgnoreCase.class) Specification<Booking> pickTimeSpec) {
-        return bookingRepo.findAll(pickTimeSpec);
+//    @GetMapping(params = {"pickTime"})
+//    public Iterable<Booking> adminSearchBookingByPickTime(@Spec(path = "pickTime", params = "pickTime", spec = LikeIgnoreCase.class) Specification<Booking> pickTimeSpec) {
+//        return bookingRepo.findAll(pickTimeSpec);
+//    }
+
+    @GetMapping(path = "bookings/query/pickTime")
+    public Page<Booking> adminSearchBookingByPickTime(@RequestParam String pickTime, @RequestParam Optional<Integer> page){
+        return bookingRepo.findBookingsByPickTime(pickTime, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"dropTime"})
-    public Iterable<Booking> adminSearchBookingByDropTime(@Spec(path = "dropTime", params = "dropTime", spec = LikeIgnoreCase.class) Specification<Booking> dropTimeSpec) {
-        return bookingRepo.findAll(dropTimeSpec);
+//    @GetMapping(params = {"dropTime"})
+//    public Iterable<Booking> adminSearchBookingByDropTime(@Spec(path = "dropTime", params = "dropTime", spec = LikeIgnoreCase.class) Specification<Booking> dropTimeSpec) {
+//        return bookingRepo.findAll(dropTimeSpec);
+//    }
+
+    @GetMapping(path = "bookings/query/dropTime")
+    public Page<Booking> adminSearchBookingByDropTime(@RequestParam String dropTime, @RequestParam Optional<Integer> page){
+        return bookingRepo.findBookingsByDropTime(dropTime, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"tripDistance"})
-    public Iterable<Booking> adminSearchBookingByTripDistance(@Spec(path = "tripDistance", params = "tripDistance", spec = LikeIgnoreCase.class) Specification<Booking> tripDistanceSpec) {
-        return bookingRepo.findAll(tripDistanceSpec);
+//    @GetMapping(params = {"tripDistance"})
+//    public Iterable<Booking> adminSearchBookingByTripDistance(@Spec(path = "tripDistance", params = "tripDistance", spec = LikeIgnoreCase.class) Specification<Booking> tripDistanceSpec) {
+//        return bookingRepo.findAll(tripDistanceSpec);
+//    }
+
+    @GetMapping(path = "bookings/query/tripDistance")
+    public Page<Booking> adminSearchBookingByTripDistance(@RequestParam Long tripDistance, @RequestParam Optional<Integer> page){
+        return bookingRepo.findBookingsByTripDistance(tripDistance, PageRequest.of(page.orElse(0),5));
     }
 
     /* Manage cars */
