@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
-import java.util.List;
-import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -53,35 +51,54 @@ public class CustomerController {
         }
     }
 
-    @RequestMapping(path = "/updateCustomer", method = RequestMethod.PUT)
-    public Customer updateCustomer(@RequestBody Customer customer){
-        return customerService.updateCustomer(customer);
+    @RequestMapping(path = "/updateCustomer/{id}", method = RequestMethod.PUT)
+    public Customer updateCustomer(@PathVariable Long id,@RequestBody Customer updateCustomer){
+        return customerService.updateCustomer(updateCustomer);
     }
-
 
     @RequestMapping(path = "/allCustomers", method = RequestMethod.GET)
     Page<Customer> getAllCustomers(@RequestParam Optional<Integer> page){
         return customerRepo.findAll(PageRequest.of(page.orElse(0),5));
     }
 
-    @RequestMapping(path = "/getCustomer/{id}")
-    public Customer getById(@PathVariable Long id){
-        return customerService.getById(id);
+    @GetMapping(path = "/query/id")
+    public Customer getById(@RequestParam long id){
+        return customerRepo.findCustomerById(id);
     }
 
-    @GetMapping(params = {"name"})
-    public Page<Customer> searchCustomerByName(@RequestParam Optional<Integer> page, @Spec(path = "name", params = "name", spec = LikeIgnoreCase.class) Specification<Customer> nameSpec) {
-        return customerRepo.findAll(nameSpec, PageRequest.of(page.orElse(0),5));
+//    @RequestMapping(path = "/getCustomer/{id}")
+//    public Customer getById(@PathVariable Long id){
+//        return customerService.getById(id);
+//    }
+
+//    @GetMapping(params = {"name"})
+//    public Page<Customer> searchCustomerByName(@RequestParam Optional<Integer> page, @Spec(path = "name", params = "name", spec = LikeIgnoreCase.class) Specification<Customer> nameSpec) {
+//        return customerRepo.findAll(nameSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "query/name")
+    public Page<Customer> searchCustomerByName(@RequestParam String name, @RequestParam Optional<Integer> page){
+        return customerRepo.findCustomersByName(name, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"address"})
-    public Iterable<Customer> searchCustomerByAddress(@RequestParam Optional<Integer> page,@Spec(path = "address", params = "address",  spec = LikeIgnoreCase.class) Specification<Customer> addressSpec) {
-        return customerRepo.findAll(addressSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"address"})
+//    public Iterable<Customer> searchCustomerByAddress(@RequestParam Optional<Integer> page,@Spec(path = "address", params = "address",  spec = LikeIgnoreCase.class) Specification<Customer> addressSpec) {
+//        return customerRepo.findAll(addressSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "query/address")
+    public Page<Customer> searchCustomerByAddress(@RequestParam String address, @RequestParam Optional<Integer> page){
+        return customerRepo.findCustomersByAddress(address, PageRequest.of(page.orElse(0),5));
     }
 
-    @GetMapping(params = {"phone"})
-    public Page<Customer> searchCustomerByPhone(@RequestParam Optional<Integer> page, @Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Customer> phoneSpec) {
-        return customerRepo.findAll(phoneSpec, PageRequest.of(page.orElse(0),5));
+//    @GetMapping(params = {"phone"})
+//    public Page<Customer> searchCustomerByPhone(@RequestParam Optional<Integer> page, @Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Customer> phoneSpec) {
+//        return customerRepo.findAll(phoneSpec, PageRequest.of(page.orElse(0),5));
+//    }
+
+    @GetMapping(path = "query/phone")
+    public Page<Customer> searchCustomerByPhone(@RequestParam String phone, @RequestParam Optional<Integer> page){
+        return customerRepo.findCustomersByPhone(phone, PageRequest.of(page.orElse(0),5));
     }
 
 }

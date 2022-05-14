@@ -241,5 +241,4 @@ public class DriverControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content",hasSize(1)));
     }
-
 }

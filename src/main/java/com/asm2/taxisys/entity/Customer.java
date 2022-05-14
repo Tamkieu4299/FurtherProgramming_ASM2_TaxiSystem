@@ -35,6 +35,17 @@ public class Customer{
 
     public Customer(){}
 
+    public Customer(long id){
+        this.id=id;
+    }
+
+    public Customer(long id, String name, String address, String phone){
+        this.id=id;
+        this.name=name;
+        this.address=address;
+        this.phone=phone;
+    }
+
     public Long getId() {
         return id;
     }
