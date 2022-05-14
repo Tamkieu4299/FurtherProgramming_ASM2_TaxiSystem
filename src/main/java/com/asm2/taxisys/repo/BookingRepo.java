@@ -1,7 +1,6 @@
 package com.asm2.taxisys.repo;
 
 import com.asm2.taxisys.entity.Booking;
-import com.asm2.taxisys.entity.Car;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

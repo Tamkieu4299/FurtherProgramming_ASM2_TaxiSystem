@@ -4,7 +4,6 @@ import com.asm2.taxisys.entity.Car;
 import com.asm2.taxisys.entity.Driver;
 import com.asm2.taxisys.repo.CarRepo;
 import com.asm2.taxisys.repo.DriverRepo;
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

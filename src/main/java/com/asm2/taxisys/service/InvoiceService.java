@@ -2,17 +2,12 @@ package com.asm2.taxisys.service;
 
 import com.asm2.taxisys.entity.*;
 import com.asm2.taxisys.repo.InvoiceRepo;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.text.ParseException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +22,6 @@ public class InvoiceService {
     private InvoiceRepo invoiceRepo;
     @Autowired
     private BookingService bookingService;
-
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

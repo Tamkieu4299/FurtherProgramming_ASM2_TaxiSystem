@@ -7,17 +7,11 @@ import com.asm2.taxisys.service.CarService;
 import com.asm2.taxisys.service.DriverService;
 import com.asm2.taxisys.repo.DriverRepo;
 import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
-import java.util.List;
 import java.util.Optional;
 
 //"licenseNumber": "abc123",
@@ -70,40 +64,20 @@ public class DriverController {
         return driverRepo.findAll(PageRequest.of(page.orElse(0),5));
     }
 
-//    @RequestMapping(path = "/getDriver/{id}")
-//    public Driver getById(@PathVariable Long id){
-//        return driverService.getById(id);
-//    }
-
     @GetMapping(path = "/query/id")
     public Driver getById(@RequestParam long id){
         return driverRepo.findDriverById(id);
     }
-
-//    @GetMapping(params = {"licenseNumber"})
-//    Page<Driver> searchDriverByLicense(@RequestParam Optional<Integer> page, @Spec(path = "licenseNumber", params = "licenseNumber", spec = LikeIgnoreCase.class) Specification<Driver> licenseSpec){
-//        return driverRepo.findAll(licenseSpec,PageRequest.of(page.orElse(0),5));
-//    }
 
     @GetMapping(path = "query/licenseNumber")
     public Page<Driver> searchDriverByLicense(@RequestParam String licenseNumber, @RequestParam Optional<Integer> page){
         return driverRepo.findDriversByLicenseNumber(licenseNumber, PageRequest.of(page.orElse(0),5));
     }
 
-//    @GetMapping(params = {"rating"})
-//    public Page<Driver> searchDriverByRating(@RequestParam Optional<Integer> page, @Spec(path = "rating", params = "rating",  spec = LikeIgnoreCase.class) Specification<Driver> ratingSpec) {
-//        return driverRepo.findAll(ratingSpec, PageRequest.of(page.orElse(0),5));
-//    }
-
     @GetMapping(path = "query/rating")
     public Page<Driver> searchDriverByRating(@RequestParam double rating, @RequestParam Optional<Integer> page){
         return driverRepo.findDriversByRating(rating, PageRequest.of(page.orElse(0),5));
     }
-
-//    @GetMapping(params = {"phone"})
-//    public Page<Driver> searchDriverByPhone(@RequestParam Optional<Integer> page,@Spec(path = "phone", params = "phone",  spec = LikeIgnoreCase.class) Specification<Driver> phoneSpec) {
-//        return driverRepo.findAll(phoneSpec, PageRequest.of(page.orElse(0),5));
-//    }
 
     @GetMapping(path = "query/phone")
     public Page<Driver> searchDriverByPhone(@RequestParam String phone, @RequestParam Optional<Integer> page){

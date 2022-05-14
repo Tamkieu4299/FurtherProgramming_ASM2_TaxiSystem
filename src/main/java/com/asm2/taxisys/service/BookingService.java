@@ -6,22 +6,15 @@ import com.asm2.taxisys.entity.Invoice;
 import com.asm2.taxisys.repo.BookingRepo;
 import com.asm2.taxisys.repo.DriverRepo;
 import com.asm2.taxisys.repo.InvoiceRepo;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Transactional
@@ -66,7 +59,6 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookings(){
-//        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Booking.class);
         return (List<Booking>) bookingRepo.findAll();
     }
 

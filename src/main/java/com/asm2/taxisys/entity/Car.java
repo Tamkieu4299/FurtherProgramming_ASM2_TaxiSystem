@@ -1,15 +1,11 @@
 package com.asm2.taxisys.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-
-import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 @Entity

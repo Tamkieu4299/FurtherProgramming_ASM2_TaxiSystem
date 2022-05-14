@@ -2,13 +2,11 @@ package com.asm2.taxisys.service;
 
 import com.asm2.taxisys.entity.Customer;
 import com.asm2.taxisys.repo.CustomerRepo;
-import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
