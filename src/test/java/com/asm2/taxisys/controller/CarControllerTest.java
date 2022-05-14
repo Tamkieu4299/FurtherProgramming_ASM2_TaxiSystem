@@ -4,8 +4,10 @@ import static org.hamcrest.Matchers.hasSize;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
@@ -63,34 +65,6 @@ class CarControllerTest {
     @MockBean
     private CarService carService;
 
-    @Test
-    void TestAddCar() throws Exception {
-        Car car = new Car();
-        when(carService.saveCar(car)).thenReturn(car);
-        ResultActions resultActions = mvc.perform(post("/cars/addCar").contentType(MediaType.APPLICATION_JSON).content("{\n" +
-                        "    \"make\": \"Audi\",\n" +
-                        "            \"model\": \"2022\",\n" +
-                        "            \"color\": \"black\",\n" +
-                        "            \"convertible\": true,\n" +
-                        "            \"rating\": 5.00,\n" +
-                        "            \"licencePlate\": \"70H-123\",\n" +
-                        "            \"ratePerKm\": 4.787}"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-        MvcResult result = resultActions.andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
-        assertEquals("Hi", "Hi");
-//        System.out.println("hi"+contentAsString);
-//         mvc.perform(post("/cars/addCar").contentType(MediaType.APPLICATION_JSON).content("{\n" +
-//                        "    \"make\": \"Audi\",\n" +
-//                        "            \"model\": \"2022\",\n" +
-//                        "            \"color\": \"black\",\n" +
-//                        "            \"convertible\": true,\n" +
-//                        "            \"rating\": 5.00,\n" +
-//                        "            \"licencePlate\": \"70H-123\",\n" +
-//                        "            \"ratePerKm\": 4.787}"))
-//                .andExpect(status().isOk());
-    }
 
     @Test
     public void testFindAllTrue() throws Exception {
@@ -108,7 +82,6 @@ class CarControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(5)));
     }
-
     @Test
     public void getCarbyID() throws Exception {
         Car car = new Car((long) 1, "a");
@@ -118,17 +91,16 @@ class CarControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id",is(1)));
     }
-
     @Test
-    public void getCarbyIDFalse() throws Exception {
+    public void getCarbyIDNegative() throws Exception {
         Car car = new Car((long) 1, "a");
         given(carRepo.findCarById(1L)).willReturn(car);
 
-        mvc.perform(get("/admin/cars/query/id?id=1").contentType(MediaType.APPLICATION_JSON_VALUE))
+        String result=  mvc.perform(get("/admin/cars/query/id?id=2").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id",is(2)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
-
     @Test
     void searchCarByModel() throws Exception{
         List<Car> allTodos = IntStream.range(0, 5)
@@ -140,17 +112,17 @@ class CarControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)));
     }
-
     @Test
-    void searchCarByModelFalse() throws Exception{
+    void searchCarByModelNegative() throws Exception{
         List<Car> allTodos = IntStream.range(0, 5)
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
         given(carRepo.findCarsByModel("2022",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/cars/query/model?model=2023&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result=mvc.perform(get("/admin/cars/query/model?model=1242311&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(5)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     public static String asJsonString ( final Object obj){
@@ -165,17 +137,24 @@ class CarControllerTest {
     void addCarTest() throws Exception {
         Car car = new Car((long) 1, "a");
         given(carService.saveCar(car)).willReturn(car);
-        mvc.perform(post("admin/cars/addCar").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(post("/admin/cars/addCar").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
     }
-
+    
     @Test
     void addCarTestFalse() throws Exception {
         Car car = new Car((long) 1, "a");
         given(carService.saveCar(car)).willReturn(car);
-        mvc.perform(post("admin/cars/addCarr").content(asJsonString(car)).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mvc.perform(post("/admin/cars/addCarr").content("\n" +
+                        "    \"make\": \"Audi\",\n" +
+                        "            \"model\": \"2022\",\n" +
+                        "            \"color\": \"black\",\n" +
+                        "            \"convertible\": true,\n" +
+                        "            \"rating\": 5.00,\n" +
+                        "            \"licencePlate\": \"70H-123\",\n" +
+                        "            \"ratePerKm\": 4.787}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
 
     }
 
@@ -208,7 +187,7 @@ class CarControllerTest {
             System.out.println(car.getId() + car.getModel());
         }
         mvc.perform(delete("/admin/cars/deleteCarr/1").contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -240,7 +219,8 @@ class CarControllerTest {
             System.out.println(car.getId() + car.getModel());
         }
         mvc.perform(MockMvcRequestBuilders.put("/admin/cars/updateCarr/1").content(asJsonString(new Car(1L,"2023"))).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
+
     }
 
     @Test
@@ -261,10 +241,11 @@ class CarControllerTest {
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
-        given(carRepo.findCarsByRating(4.787,PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/cars/query/rating?rating=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
+        given(carRepo.findCarsByRating(4.78,PageRequest.of(0, 5))).willReturn(page);
+        String result =mvc.perform(get("/admin/cars/query/rating?rating=4.78&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -286,9 +267,10 @@ class CarControllerTest {
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
         given(carRepo.findCarsByLicencePlate("70H-123",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/cars/query/licencePlate?licencePlate=70H-123&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result=  mvc.perform(get("/admin/cars/query/licencePlate?licencePlate=70H-12&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -308,10 +290,11 @@ class CarControllerTest {
                 .mapToObj(i -> new Car((long) i, "123", "Audi", "2022","black",true, (double) 5L,"70H-123",(double)4.787))
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
-        given(carRepo.findCarsByRatePerKm(4.787,PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/cars/query/ratePerKm?ratePerKm=4.787&page=0").contentType(MediaType.APPLICATION_JSON))
+        given(carRepo.findCarsByRatePerKm((double) 4.787,PageRequest.of(0, 5))).willReturn(page);
+        String result=mvc.perform(get("/admin/cars/query/ratePerKm?ratePerKm=4.78&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -333,9 +316,10 @@ class CarControllerTest {
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
         given(carRepo.findCarsByColor("black",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/cars/query/color?color=black&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result =mvc.perform(get("/admin/cars/query/color?color=white&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -357,8 +341,9 @@ class CarControllerTest {
                 .collect(Collectors.toList());
         Page<Car> page = new PageImpl<>(allTodos);
         given(carRepo.findCarsByConvertible(true,PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/cars/query/convertible?convertible=true&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result = mvc.perform(get("/admin/cars/query/convertible?convertible=false&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 }

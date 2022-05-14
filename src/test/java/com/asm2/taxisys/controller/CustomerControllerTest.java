@@ -1,3 +1,4 @@
+
 package com.asm2.taxisys.controller;
 
 import com.asm2.taxisys.entity.Booking;
@@ -32,6 +33,7 @@ import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,7 +77,7 @@ public class CustomerControllerTest {
         Customer customer = new Customer((long) 1);
         given(customerService.saveCustomer(customer)).willReturn(customer);
         mvc.perform(post("/customers/addCustomerr").content(asJsonString(customer)).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
 //                .andExpect(jsonPath("$.id", is(1L)));
     }
 
@@ -124,7 +126,7 @@ public class CustomerControllerTest {
 
         given(customerRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(MockMvcRequestBuilders.put("/customers/updateCustomerr/1").content(asJsonString(new Customer(1L))).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -146,9 +148,8 @@ public class CustomerControllerTest {
                 .collect(Collectors.toList());
         Page<Customer> page = new PageImpl<Customer>(allTodos);
         given(customerRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/customers/allCustomers?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+        mvc.perform(get("/customers/allCustomer?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -168,9 +169,10 @@ public class CustomerControllerTest {
 
         given(customerRepo.findCustomerById(1L)).willReturn(customer);
 
-        mvc.perform(get("/customers/query/id?id=1").contentType(MediaType.APPLICATION_JSON_VALUE))
+        String result =mvc.perform(get("/customers/query/id?id=2").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id",is(0)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -191,10 +193,11 @@ public class CustomerControllerTest {
                 .mapToObj(i -> new Customer((long) i,"Kieu Tam", "d7","0834086256"))
                 .collect(Collectors.toList());
         Page<Customer> page = new PageImpl<Customer>(allTodos);
-        given(customerRepo.findCustomersByName("Tam",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/customers/query/name?name=Tam&page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
+        given(customerRepo.findCustomersByName("Kieu Tam",PageRequest.of(0, 5))).willReturn(page);
+        String result=mvc.perform(get("/customers/query/name?name=Tam&page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content",hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -216,9 +219,10 @@ public class CustomerControllerTest {
                 .collect(Collectors.toList());
         Page<Customer> page = new PageImpl<Customer>(allTodos);
         given(customerRepo.findCustomersByAddress("d7",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/customers/query/address?address=d7&page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
+        String result=mvc.perform(get("/customers/query/address?address=d10&page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content",hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -240,8 +244,9 @@ public class CustomerControllerTest {
                 .collect(Collectors.toList());
         Page<Customer> page = new PageImpl<Customer>(allTodos);
         given(customerRepo.findCustomersByPhone("0834086256",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/customers/query/phone?phone=0834086256&page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
+        String result=mvc.perform(get("/customers/query/phone?phone=08340862561&page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content",hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 }

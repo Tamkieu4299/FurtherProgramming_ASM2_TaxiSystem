@@ -50,13 +50,7 @@ public class DriverControllerTest {
     @MockBean
     private DriverService driverService;
 
-    public static String asJsonString ( final Object obj){
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     @Test
     void addDriverTest() throws Exception {
@@ -87,7 +81,13 @@ public class DriverControllerTest {
         mvc.perform(delete("/drivers/deleteDriver/1").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
-
+    public static String asJsonString ( final Object obj){
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Test
     void deleteDriverFalse() throws Exception{
         List<Driver> allTodos = IntStream.range(0, 5)

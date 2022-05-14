@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
@@ -102,9 +103,9 @@ class BookingControllerTest {
         Page<Booking> page = new PageImpl<Booking>(allTodos);
 
         given(bookingRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/bookings/allBookings?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+        mvc.perform(get("/admin/bookings/allBooking?page=0").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is4xxClientError());
+
     }
 
     @Test
@@ -124,9 +125,10 @@ class BookingControllerTest {
 
         given(bookingRepo.findBookingById(1L)).willReturn(booking);
 
-        mvc.perform(get("/admin/bookings/query/id?id=1").contentType(MediaType.APPLICATION_JSON_VALUE))
+        String result = mvc.perform(get("/admin/bookings/query/id?id=2").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id",is(2)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -148,9 +150,10 @@ class BookingControllerTest {
                 .collect(Collectors.toList());
         Page<Booking> page = new PageImpl<Booking>(allTodos);
         given(bookingRepo.findBookingsByStartLocation("HCM",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/bookings/query/startLocation?startLocation=HCM&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result =mvc.perform(get("/admin/bookings/query/startLocation?startLocation=HN&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -172,9 +175,10 @@ class BookingControllerTest {
                 .collect(Collectors.toList());
         Page<Booking> page = new PageImpl<Booking>(allTodos);
         given(bookingRepo.findBookingsByEndLocation("HN",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/bookings/query/endLocation?endLocation=HN&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result =mvc.perform(get("/admin/bookings/query/endLocation?endLocation=HCM&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -196,9 +200,10 @@ class BookingControllerTest {
                 .collect(Collectors.toList());
         Page<Booking> page = new PageImpl<Booking>(allTodos);
         given(bookingRepo.findBookingsByPickTime("05/14/2022 18:00:00",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/bookings/query/pickTime?pickTime=05/14/2022 18:00:00&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result =mvc.perform(get("/admin/bookings/query/pickTime?pickTime=05/14/2022 18:00:01&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -220,9 +225,10 @@ class BookingControllerTest {
                 .collect(Collectors.toList());
         Page<Booking> page = new PageImpl<Booking>(allTodos);
         given(bookingRepo.findBookingsByDropTime("05/14/2022 19:00:00",PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/bookings/query/dropTime?dropTime=05/14/2022 19:00:00&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result =mvc.perform(get("/admin/bookings/query/dropTime?dropTime=05/14/2022 19:00:01&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     @Test
@@ -244,9 +250,10 @@ class BookingControllerTest {
                 .collect(Collectors.toList());
         Page<Booking> page = new PageImpl<Booking>(allTodos);
         given(bookingRepo.findBookingsByTripDistance(10L,PageRequest.of(0, 5))).willReturn(page);
-        mvc.perform(get("/admin/bookings/query/tripDistance?tripDistance=10&page=0").contentType(MediaType.APPLICATION_JSON))
+        String result=mvc.perform(get("/admin/bookings/query/tripDistance?tripDistance=11&page=0").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)));
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(result,"");
     }
 
     public static String asJsonString ( final Object obj){
@@ -261,6 +268,7 @@ class BookingControllerTest {
     void addBookingTest() throws Exception {
         Booking booking = new Booking((long) 1);
         given(bookingService.saveBooking(booking)).willReturn(booking);
+
         mvc.perform(post("/admin/bookings/addBooking").content(asJsonString(booking)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$.id", is(1L)));
@@ -268,10 +276,12 @@ class BookingControllerTest {
 
     @Test
     void addBookingTestFalse() throws Exception {
+
         Booking booking = new Booking((long) 1);
+//        System.out.println(asJsonString(booking));
         given(bookingService.saveBooking(booking)).willReturn(booking);
-        mvc.perform(post("/admin/bookings/addBookin").content(asJsonString(booking)).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mvc.perform(post("/admin/bookings/addBooking").content("\"id\":1,\"startLocation\":null,\"endLocation\":null,\"pickTime\":null,\"dropTime\":null,\"tripDistance\":null,\"invoice\":null,\"time\":null").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
 //                .andExpect(jsonPath("$.id", is(1L)));
     }
 
@@ -296,7 +306,7 @@ class BookingControllerTest {
 
         given(bookingRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(delete("/admin/bookings/deleteBookig/6").contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -320,6 +330,6 @@ class BookingControllerTest {
 
         given(bookingRepo.findAll(PageRequest.of(0, 5))).willReturn(page);
         mvc.perform(MockMvcRequestBuilders.put("/admin/bookings/updateBookng/6").content(asJsonString(new Car(1L,"2023"))).contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 }
